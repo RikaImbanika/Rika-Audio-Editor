@@ -1,0 +1,26 @@
+﻿<Window x:Class="Rika_Audio.LogsWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Rika_Audio"
+        mc:Ignorable="d"
+        Title="Логи" 
+        Height="600" 
+        Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <!-- Область для вывода логов -->
+        <TextBox x:Name="Logs" 
+                 IsReadOnly="True" 
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Auto"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
+                 FontFamily="Consolas"
+                 FontSize="14"
+                 Background="Black"
+                 Foreground="White"
+                 Margin="10"/>
+    </Grid>
+</Window>
