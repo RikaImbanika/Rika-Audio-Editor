@@ -25,17 +25,31 @@ namespace Rika_Audio
 
         public double CalcPhase => Math.Atan2(Imaginary, Real);
 
-        public static Complex operator +(Complex a, Complex b) =>
-            new Complex(a.Real + b.Real, a.Imaginary + b.Imaginary);
+        public static Complex operator +(Complex a, Complex b)
+        {
+            var res = new Complex(a.Real + b.Real, a.Imaginary + b.Imaginary);
+/*            res.Magnitude = res.CalcMagnitude;
+            res.Phase = res.CalcPhase;*/
+            return res;
+        }
 
-        public static Complex operator -(Complex a, Complex b) =>
-            new Complex(a.Real - b.Real, a.Imaginary - b.Imaginary);
+        public static Complex operator -(Complex a, Complex b)
+        {
+            var res = new Complex(a.Real - b.Real, a.Imaginary - b.Imaginary);
+/*            res.Magnitude = res.CalcMagnitude;
+            res.Phase = res.CalcPhase;*/
+            return res;
+        }
 
-        public static Complex operator *(Complex a, Complex b) =>
-            new Complex(
+        public static Complex operator *(Complex a, Complex b)
+        {
+            var res = new Complex(
                 a.Real * b.Real - a.Imaginary * b.Imaginary,
                 a.Real * b.Imaginary + a.Imaginary * b.Real
             );
+
+            return res;
+        }
 
         public static Complex operator /(Complex a, double scalar)
         {

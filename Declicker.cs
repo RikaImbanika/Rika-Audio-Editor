@@ -93,12 +93,12 @@ namespace Rika_Audio
 
                 void ProcessOneChannel(bool LR)
                 {
-                    _samples = wav.SamplesL;
+                    _samples = wav.Samples[0];
 
                     string gg = "L";
                     if (LR)
                     {
-                        _samples = wav.SamplesR;
+                        _samples = wav.Samples[1];
                         gg = "R";
                     }
 
@@ -441,7 +441,7 @@ namespace Rika_Audio
         {
             _step = (int)(Params._windowSize * (1 - Params._overlap));
 
-            _width = (int)Math.Ceiling((double)(_wav.SamplesL.Length - Params._windowSize) / _step) + 1;
+            _width = (int)Math.Ceiling((double)(_wav.Samples[0].Length - Params._windowSize) / _step) + 1;
 
             _fft = new Complex[_width][];
             _phases = new float[_width][];

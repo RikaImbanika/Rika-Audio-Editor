@@ -12,12 +12,13 @@ namespace Rika_Audio
         public int Channels { get; set; }
         public int SampleRate { get; set; }
         public int BitDepth { get; set; }
-        public float[] SamplesL { get; set; }
-        public float[] SamplesR { get; set; }
+        public float[][] Samples { get; set; }
 
         public static void Save(string path, Wav wav)
         {
             ValidateWavParameters(wav);
+
+            Logger.Log($"Saving wav...");
 
             using (var writer = new BinaryWriter(File.Open(path, FileMode.Create)))
             {
@@ -28,6 +29,8 @@ namespace Rika_Audio
                 writer.Write(audioData);
                 UpdateFileSizes(writer, dataChunkPosition, audioData.Length);
             }
+
+            Logger.Log($"Saved wav.");
         }
 
         private static void ValidateWavParameters(Wav wav)
@@ -38,8 +41,8 @@ namespace Rika_Audio
                 throw new ArgumentException("Sample rate must be positive");
             if (wav.BitDepth % 8 != 0 || wav.BitDepth < 8 || wav.BitDepth > 32)
                 throw new ArgumentException("Bit depth must be 8, 16, 24, or 32");
-            if (wav.SamplesL == null)
-                throw new ArgumentNullException(nameof(wav.SamplesL));
+            if (wav.Samples[0] == null)
+                throw new ArgumentNullException(nameof(wav.Samples));
         }
 
         private static void WriteRiffHeader(BinaryWriter writer)
@@ -79,20 +82,20 @@ namespace Rika_Audio
             using var ms = new MemoryStream();
             using var dataWriter = new BinaryWriter(ms);
 
-            bool isStereo = wav.Channels == 2 && wav.SamplesR != null;
-            int samplesCount = wav.SamplesL.Length;
+            bool isStereo = wav.Channels == 2 && wav.Samples[1] != null;
+            int samplesCount = wav.Samples[0].Length;
 
-            if (isStereo && wav.SamplesR.Length != samplesCount)
+            if (isStereo && wav.Samples[1].Length != samplesCount)
                 throw new InvalidDataException("Каналы имеют разную длину");
 
             for (int i = 0; i < samplesCount; i++)
             {
-                float clampedL = Math.Clamp(wav.SamplesL[i], -1.0f, 1.0f);
+                float clampedL = Math.Clamp(wav.Samples[0][i], -1.0f, 1.0f);
                 WriteSampleData(wav.BitDepth, dataWriter, clampedL);
 
                 if (isStereo)
                 {
-                    float clampedR = Math.Clamp(wav.SamplesR[i], -1.0f, 1.0f);
+                    float clampedR = Math.Clamp(wav.Samples[1][i], -1.0f, 1.0f);
                     WriteSampleData(wav.BitDepth, dataWriter, clampedR);
                 }
             }

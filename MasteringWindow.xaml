@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rika_Audio"
         mc:Ignorable="d"
+        Loaded="WindowLoaded"
         Title="MaseringWindow" Width="360" SizeToContent="Height">
     <Grid>
         <StackPanel>
@@ -34,22 +35,22 @@
             </DockPanel>
 
             <DockPanel Margin="10,5">
-                <Label Content="Something:" 
-               Width="160"
+                <Label Content="Output name:" 
+               Width="110"
                Margin="0,0,10,0"
                FontSize="14"
                Padding="0,5"/>
                 <TextBox FontSize="14" 
-                 x:Name="StartTime"
-                 Width="120"
+                 x:Name="OutputName"
+                 Width="200"
                  Padding="5"
-                 Text="0"
+                 Text="My Track"
                  BorderThickness="1"
                  BorderBrush="#FFB0BEC5"/>
             </DockPanel>
 
             <DockPanel Margin="10,5">
-                <Button Content="PROCESS" 
+                <Button Content="MASTER" 
                      Width="250"
                      Height="35"
                      Margin="0,0,10,0"
@@ -57,7 +58,7 @@
                      Background="#FF2196F3"
                      Foreground="White"
                      BorderBrush="Transparent"
-                     Cursor="Hand" Click="SelWhatToMaster"/>
+                     Cursor="Hand" Click="Master"/>
             </DockPanel>
         </StackPanel>
     </Grid>

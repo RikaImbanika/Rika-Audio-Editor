@@ -20,7 +20,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Logger.StartLogShower();
-        Params._pf = Environment.CurrentDirectory + "\\ProgramFiles\\";
+        Params.Init();
+        WindowManager._mainWindow = this;
     }
 
     private void Button_Click(object sender, RoutedEventArgs e)
@@ -40,7 +41,20 @@ public partial class MainWindow : Window
     {
         WindowManager.Open(typeof(StretcherWindow));
         WindowManager.Open(typeof(LogsWindow));
-        Logger.Log("Превет, как дела, что делаешь?");
-        Logger.Log("Now select 2 tracks, please.");
+        Logger.Log("Превет, как дела, что делаешь тесо?");
+        Logger.Log("Now select 2 (TWO) tracks, please.");
+        Logger.Log("**It doesn't working now.");
+    }
+
+    private void OkayBro(object sender, RoutedEventArgs e)
+    {
+        WindowManager.Open(typeof(LogsWindow));
+        WindowManager.Open(typeof(EditorWindow));
+        Logger.Log("Окей, бро, щас ми будем хуячить музыку тесо.");
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        Params.LateInit();
     }
 }

@@ -17,6 +17,23 @@ namespace Rika_Audio
             if (!IsPowerOfTwo(n))
                 throw new ArgumentException("Array length must be power of 2");
 
+            if (inverse)
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    if (i == 0 || i == n / 2) // DC и частота Найквиста
+                    {
+                        buffer[i].Real = buffer[i].Real * n;
+                        buffer[i].Imaginary = buffer[i].Imaginary * n;
+                    }
+                    else
+                    {
+                        buffer[i].Real = buffer[i].Real * (n / 2);
+                        buffer[i].Imaginary = buffer[i].Imaginary * (n / 2);
+                    }
+                }
+            }
+
             // Bit-reversal permutation
             for (int i = 1, j = 0; i < n; i++)
             {
@@ -59,6 +76,22 @@ namespace Rika_Audio
                     buffer[i].Imaginary /= n;
                 }
             }
+            else
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    if (i == 0 || i == n / 2) // DC и частота Найквиста
+                    {
+                        buffer[i].Real = buffer[i].Real / n;
+                        buffer[i].Imaginary = buffer[i].Imaginary / n;
+                    }
+                    else
+                    {
+                        buffer[i].Real = buffer[i].Real / (n / 2);
+                        buffer[i].Imaginary = buffer[i].Imaginary / (n / 2);
+                    }
+                }
+            }
 
             // Calculate other
             maxMagnitude = 0;
@@ -70,6 +103,11 @@ namespace Rika_Audio
 
                 if (maxMagnitude < buffer[i].Magnitude)
                     maxMagnitude = buffer[i].Magnitude;
+
+                if (double.IsNaN(buffer[i].Magnitude))
+                {
+
+                }
             }
 
             return buffer;

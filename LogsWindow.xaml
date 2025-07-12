@@ -20,7 +20,7 @@
                  FontFamily="Consolas"
                  FontSize="14"
                  Background="Black"
-                 Foreground="White"
+                 Foreground="Lime"
                  Margin="10"/>
     </Grid>
 </Window>

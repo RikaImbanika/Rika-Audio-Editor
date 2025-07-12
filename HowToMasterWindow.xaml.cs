@@ -29,6 +29,11 @@ namespace Rika_Audio
         {
             InitializeComponent();
         }
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            MASTERER.LoadModelsPaths();
+            MASTERER.LoadModelsToComboBox();
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -61,7 +66,9 @@ namespace Rika_Audio
 
         private void MakeModel(object sender, RoutedEventArgs e)
         {
-            MASTERER.MakeModel(_wavPaths, _weights);
+            WindowManager.Open(typeof(LogsWindow));
+            string name = ModelName.Text;
+            MASTERER.MakeModel(_wavPaths, _weights, name);
         }
 
         string GetName(string path) => System.IO.Path.GetFileNameWithoutExtension(path);
@@ -100,6 +107,15 @@ namespace Rika_Audio
                 Weight.Text = _weights[id].ToString("0.0###", CultureInfo.InvariantCulture);
             else if (_ignoreMe)
                 _ignoreMe = false;
+        }
+
+        private void ModelsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int id = ModelsComboBox.SelectedIndex;
+            if (id != -1)
+            {
+                MASTERER.SelectModel(ModelsComboBox.Items[id].ToString());
+            }
         }
     }
 }

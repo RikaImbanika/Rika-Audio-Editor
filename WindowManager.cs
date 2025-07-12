@@ -16,6 +16,7 @@ namespace Rika_Audio
         public static MasteringWindow _masteringWindow;
         public static HowToMasterWindow _howToMasterWindow;
         public static StretcherWindow _stretcherWindow;
+        public static StretcherWindow _editorWindow;
 
         public static void Open(Type windowT)
         {
@@ -118,6 +119,7 @@ namespace Rika_Audio
             else if (WindowT == typeof(MasteringWindow)) window = _masteringWindow;
             else if (WindowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
             else if (WindowT == typeof(StretcherWindow)) window = _stretcherWindow;
+            else if (WindowT == typeof(EditorWindow)) window = _editorWindow;
 
             if (window == null) return;
 
@@ -133,6 +135,7 @@ namespace Rika_Audio
                         else if (WindowT == typeof(MasteringWindow)) _masteringWindow = null;
                         else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                         else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
+                        else if (WindowT == typeof(EditorWindow)) _stretcherWindow = null;
                     }
                 });
             }
@@ -145,6 +148,7 @@ namespace Rika_Audio
                     else if (WindowT == typeof(MasteringWindow)) _masteringWindow = null;
                     else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                     else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
+                    else if (WindowT == typeof(EditorWindow)) _stretcherWindow = null;
                 });
             }
         }

@@ -50,9 +50,9 @@ namespace Rika_Audio
         public static void ProcessOneChannel(bool isRight, string adder, Wav wav)
         {
             if (isRight)
-                wav.SamplesR = Specralize(adder, wav.SamplesR, wav);
+                wav.Samples[0] = Specralize(adder, wav.Samples[0], wav);
             else
-                wav.SamplesL = Specralize(adder, wav.SamplesL, wav);
+                wav.Samples[0] = Specralize(adder, wav.Samples[0], wav);
         }
 
         static float[] Specralize(string adder, float[] samples, Wav wav)
@@ -103,7 +103,7 @@ namespace Rika_Audio
         {
             _startIndex = 0;
             _step = (int)(Params._windowSize * (1 - Params._overlap));
-            _width = (int)Math.Ceiling((double)(wav.SamplesL.Length - Params._windowSize) / _step) + 1;
+            _width = (int)Math.Ceiling((double)(wav.Samples[0].Length - Params._windowSize) / _step) + 1;
             _fft = new Complex[_width][];
         }
 

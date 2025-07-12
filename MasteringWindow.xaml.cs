@@ -27,9 +27,22 @@ namespace Rika_Audio
             InitializeComponent();
         }
 
+        private void WindowLoaded(object sender, RoutedEventArgs e)
+        {
+            MASTERER.LoadModelsPaths();
+        }
+
         private void SelHowToMaster(object sender, RoutedEventArgs e)
         {
             WindowManager.Open(typeof(HowToMasterWindow));
+        }
+
+        private void Master(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(_wavPath))
+                MessageBox.Show($"Select wav first.");
+            else
+                MASTERER.MASTER(_wavPath, OutputName.Text);
         }
 
         private void SelWhatToMaster(object sender, RoutedEventArgs e)

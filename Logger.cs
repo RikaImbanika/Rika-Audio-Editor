@@ -38,6 +38,11 @@ namespace Rika_Audio
 
                     if (_updated)
                     {
+                        if (WindowManager._logsWindow == null)
+                        {
+                            WindowManager.Open(typeof(LogsWindow));
+                        }
+
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             try

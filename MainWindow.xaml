@@ -5,38 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rika_Audio"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Content="Declicker" 
-             Width="140" 
-             Height="40" 
-             Margin="5"
-             FontSize="14"
-             Background="#FF2196F3"
-             Foreground="White"
-             BorderBrush="Transparent"
-             Cursor="Hand" Click="Button_Click"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Image
+                Name="PIC"
+            Margin="20,20,20,20"
+                Grid.Column="0"
+        />
+            
+            <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-            <Button Content="Stretcher" 
-             Width="140" 
-             Height="40" 
-             Margin="5"
-             FontSize="14"
-             Background="DarkViolet"
-             Foreground="White"
-             BorderBrush="Transparent"
-             Cursor="Hand" Click="StretcherClick"/>
 
-            <Button Content="Mastering" 
-             Width="140" 
-             Height="40" 
-             Margin="5"
-             FontSize="14"
-             Background="#FF4CAF50"
-             Foreground="White"
-             BorderBrush="Transparent"
-             Cursor="Hand" Click="Button_Click_1"/>
-        </StackPanel>
+                <Button Content="Declicker" 
+     Width="200" 
+     Height="40" 
+     Margin="5"
+     FontSize="14"
+     Background="#FF2196F3"
+     Foreground="White"
+     BorderBrush="Transparent"
+     Cursor="Hand" Click="Button_Click"/>
+
+                <Button Content="Stretcher" 
+     Width="200" 
+     Height="40" 
+     Margin="5"
+     FontSize="14"
+     Background="DarkViolet"
+     Foreground="White"
+     BorderBrush="Transparent"
+     Cursor="Hand" Click="StretcherClick"/>
+
+                <Button Content="Music Maker" 
+     Width="200" 
+     Height="40" 
+     Margin="5"
+     FontSize="14"
+     Background="#FFFF0050"
+     Foreground="White"
+     BorderBrush="Transparent"
+     Cursor="Hand" Click="OkayBro"/>
+
+                <Button Content="Mastering" 
+     Width="200" 
+     Height="40" 
+     Margin="5"
+     FontSize="14"
+     Background="#FF4CAF50"
+     Foreground="White"
+     BorderBrush="Transparent"
+     Cursor="Hand" Click="Button_Click_1"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

@@ -28,6 +28,7 @@ namespace Rika_Audio
             reader.ReadInt32(); // byte rate
             reader.ReadInt16(); // block align
             wav.BitDepth = reader.ReadInt16();
+            wav.Samples = new float[2][];
 
             reader.ReadBytes(fmtSize - 16);
 
@@ -51,8 +52,8 @@ namespace Rika_Audio
                 _ => throw new NotSupportedException($"Unsupported format: {formatTag}/{wav.BitDepth}bit")
             };
 
-            wav.SamplesL = samplesL;
-            wav.SamplesR = wav.Channels == 2 ? samplesR : null;
+            wav.Samples[0] = samplesL;
+            wav.Samples[1] = wav.Channels == 2 ? samplesR : null;
 
             return wav;
         }

@@ -11,7 +11,7 @@ namespace Rika_Audio
         public static int _startIndex;
         public static int _width;
         public static int _step;
-        public static Complex[][] _fft;
+        public static Complex[][][] _fft;
         public static WriteableBitmap _bitmap1;
         public static WriteableBitmap _bitmap2;
         public static WriteableBitmap _bitmap3;
@@ -20,7 +20,328 @@ namespace Rika_Audio
         public static int _bytesPerPixel = 3; ////////////////////
         public static double _globalMax;
         public static float[] _samples;
-        public static void MakeModel(string[] wavs, float[] weights)
+        public static string[] _modelsPaths;
+        public static Wav _ourWav;
+
+        public static void MASTER(string wav, string outputName)
+        {
+            Thread master = new Thread(MASTERTHREAD);
+            master.Name = "MASTERER";
+            master.Start();
+        
+            void MASTERTHREAD()
+            {
+                float[,] trackModel = MakeOneModel(wav);
+                float[,] idealModel = LoadModel(Params._selectedModelPath);
+                float[][][] tuner = MakeTuner(trackModel, idealModel);
+
+                Logger.Log($"MASTERING...");
+
+                for (int sample = 0; sample < _fft[0].Length; sample++)
+                {
+                    for (int frq = 0; frq < Params._windowSize / 2; frq++)
+                    {
+                        TuneOne(0, sample, frq, tuner);
+                        if (_ourWav.Channels == 2)
+                            TuneOne(1, sample, frq, tuner);
+                    }
+                }
+
+                DelogarythmiseFft(0);
+                if (_ourWav.Channels == 2)
+                    DelogarythmiseFft(1);
+
+                Despectralise(0);
+                if (_ourWav.Channels == 2)
+                    Despectralise(1);
+
+                Normalise(_ourWav.Samples[0]);
+                if (_ourWav.Channels == 2)
+                    Normalise(_ourWav.Samples[1]);
+
+                Wav.Save($"{Params._pf}Output\\{outputName}.wav", _ourWav);
+                Logger.Log($"MASTERING DONE!");
+            }
+        }
+
+        public static void TuneOne(int channelId, int sample, int frq, float[][][] tuner)
+        {
+            int antifrq = Params._windowSize - frq - 1;
+
+            double volume1 = _fft[channelId][sample][frq].Magnitude;
+            double volume2 = _fft[channelId][sample][antifrq].Magnitude;
+            double volume = (volume1 + volume2) / 2;
+
+            if (double.IsNaN(volume))
+            {
+
+            }
+
+            double tune = FindTune(volume, frq, tuner);
+            tune = (volume + tune) / volume;
+
+            if (double.IsNaN(tune))
+            {
+
+            }
+
+            _fft[channelId][sample][frq] *= tune;
+            _fft[channelId][sample][antifrq] *= tune;
+        }
+
+        public static double FindTune(double volume, int frqId, float[][][] tuner)
+        {
+            int i = 0;
+            for (; i < Params._resolution - 1; i++)
+                if (volume >= tuner[frqId][0][i] && volume < tuner[frqId][0][i + 1])
+                    break;
+
+            double progress;
+            double tune;
+
+            if (i < Params._resolution - 1)
+            {
+                progress = (volume - tuner[frqId][0][i]) / (tuner[frqId][0][i + 1] - tuner[frqId][0][i]);
+                tune = tuner[frqId][1][i] * (1 - progress) + tuner[frqId][1][i + 1] * progress;
+            }
+            else
+                tune = tuner[frqId][1][Params._resolution - 1];
+
+            if (double.IsNaN(tune))
+            {
+
+            }
+
+            return tune;
+        }
+
+        public static float[][][] MakeTuner(float[,] from, float[,] to)
+        {
+            int width = from.GetLength(0);
+            float[][][] tuner = new float[width][][];
+
+            for (int frqId = 0; frqId < width; frqId++)
+                tuner[frqId] = TuneOneFrequency(from, to, frqId);
+
+            return tuner;
+        }
+
+        public static float[][] TuneOneFrequency(float[,] from, float[,] to, int frqId)
+        {
+            float[] from0 = new float[Params._resolution];
+            float[] to0 = new float[Params._resolution];
+
+            for (int i = 0; i < Params._resolution; i++)
+            {
+                from0[i] = from[frqId, i];
+                to0[i] = to[frqId, i];
+            }
+
+            float[][] tuner = new float[2][];
+
+            tuner[0] = Distribute(from0, Params._resolution);
+            tuner[1] = Distribute(to0, Params._resolution);
+
+            for (int i = 0; i < tuner[1].Length; i++)
+                tuner[1][i] = tuner[1][i] - tuner[0][i];
+
+            return tuner;
+        }
+
+        public static float[] Distribute(float[] how, int count)
+        {
+            float[] result = new float[count];
+
+            int[] counts = new int[how.Length];
+
+            float sum = 0;
+            for (int i = 0; i < how.Length; i++)
+                sum += how[i];
+
+            int sum2 = 0;
+
+            double[] fractions = new double[how.Length]; // Массив дробных частей
+
+            // Вычисление целых частей и дробных остатков
+            for (int i = 0; i < how.Length; i++)
+            {
+                float value = how[i] * count / sum;
+                counts[i] = (int)Math.Floor(value);
+                fractions[i] = value - counts[i];
+                sum2 += counts[i];
+            }
+
+            // Корректировка остатка
+            int diff = count - sum2;
+            if (diff != 0)
+            {
+                // Создание и сортировка индексов по убыванию дробной части
+                int[] indices = new int[how.Length];
+                for (int i = 0; i < how.Length; i++)
+                    indices[i] = i;
+
+                Array.Sort(indices, (a, b) => fractions[b].CompareTo(fractions[a]));
+
+                // Распределение остатка
+                if (diff > 0)
+                    for (int i = 0; i < diff; i++)
+                        counts[indices[i]]++;
+                else
+                    for (int i = 0; i < -diff; i++)
+                        counts[indices[i]]--;
+            }
+
+            int jj = 0;
+
+            float substep = 1f / how.Length;
+
+            for (int i = 0; i < how.Length; i++)
+            {
+                float subsubstep = 0;
+                if (counts[i] > 0)
+                    subsubstep = substep / counts[i];
+
+                for (int k = 0; k < counts[i]; k++)
+                {
+                    result[jj] = i / (how.Length * 1f) + k * subsubstep;
+                    jj += 1;
+                }
+            }
+
+            return result;
+        }
+
+        public static float[] GenerateDistributedArray(float[] dist, int n)
+        {
+            //Delme
+            if (n == 0)
+                return Array.Empty<float>();
+
+            int m = dist.Length;
+            if (m < 2)
+            {
+                // Если распределение задано некорректно, возвращаем равномерное распределение
+                float[] uniformArray = new float[n];
+                for (int i = 0; i < n; i++)
+                    uniformArray[i] = (n == 1) ? 0.5f : (float)i / (n - 1);
+                return uniformArray;
+            }
+
+            // Генерируем значения u (квантили)
+            float[] uVals = new float[n];
+            if (n == 1)
+                uVals[0] = 0.5f;
+            else
+                for (int i = 0; i < n; i++)
+                    uVals[i] = (float)i / (n - 1);
+
+            float[] result = new float[n];
+            for (int i = 0; i < n; i++)
+            {
+                float u = uVals[i];
+                if (u <= dist[0])
+                {
+                    result[i] = 0.0f;
+                }
+                else if (u >= dist[m - 1])
+                {
+                    result[i] = 1.0f;
+                }
+                else
+                {
+                    // Находим интервал j, такой что dist[j] <= u < dist[j + 1]
+                    int j = 0;
+                    while (j < m - 1 && !(dist[j] <= u && u < dist[j + 1]))
+                        j++;
+
+                    // Вычисляем x_j и x_{j+1}
+                    float x_j = (float)j / (m - 1);
+                    float x_j1 = (float)(j + 1) / (m - 1);
+
+                    // Линейная интерполяция
+                    float segmentLength = dist[j + 1] - dist[j];
+                    if (segmentLength == 0)
+                    {
+                        result[i] = x_j; // Если интервал вырожден, берем начало
+                    }
+                    else
+                    {
+                        float ratio = (u - dist[j]) / segmentLength;
+                        result[i] = x_j + ratio * (x_j1 - x_j);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static float[] TransformDistribution(float[] from, float[] to)
+        {
+            //Delme
+            int n = from.Length;
+            float[] result = new float[n];
+
+            // Рассчитываем кумулятивные распределения (CDF) для from и to
+            float[] cdfFrom = new float[n];
+            float[] cdfTo = new float[n];
+
+            cdfFrom[0] = from[0];
+            cdfTo[0] = to[0];
+
+            for (int i = 1; i < n; i++)
+            {
+                cdfFrom[i] = cdfFrom[i - 1] + from[i];
+                cdfTo[i] = cdfTo[i - 1] + to[i];
+            }
+
+            // Нормализуем CDF до 1.0 (устраняем погрешности float)
+            float sumFrom = cdfFrom[n - 1];
+            float sumTo = cdfTo[n - 1];
+
+            for (int i = 0; i < n; i++)
+            {
+                cdfFrom[i] /= sumFrom;
+                cdfTo[i] /= sumTo;
+            }
+
+            // Обрабатываем каждый бин исходного распределения
+            for (int i = 0; i < n; i++)
+            {
+                // Вычисляем квантиль (середина текущего бина)
+                float lowerBound = (i == 0) ? 0 : cdfFrom[i - 1];
+                float upperBound = cdfFrom[i];
+                float quantile = (lowerBound + upperBound) / 2f;
+
+                // Находим целевой бин в распределении to
+                int targetBin = 0;
+                while (targetBin < n && quantile > cdfTo[targetBin])
+                {
+                    targetBin++;
+                }
+
+                // Корректируем для последнего бина
+                if (targetBin >= n) targetBin = n - 1;
+
+                // Вычисляем границы целевого бина
+                float targetLower = (targetBin == 0) ? 0 : cdfTo[targetBin - 1];
+                float targetUpper = cdfTo[targetBin];
+
+                // Вычисляем позицию внутри целевого бина
+                float binProbability = targetUpper - targetLower;
+                float fraction = (binProbability < 0.0001f)
+                    ? 0.5f
+                    : (quantile - targetLower) / binProbability;
+
+                // Линейно интерполируем значение в целевом бине
+                // Предполагаем, что бины равномерно распределены в [0, 1]
+                float binValue = (targetBin + fraction) / n;
+                result[i] = binValue;
+            }
+
+            return result;
+        }
+
+        public static void MakeModel(string[] wavs, float[] weights, string name)
         {
             Thread mtr = new Thread(MT);
             mtr.Name = "MASTERER";
@@ -28,6 +349,8 @@ namespace Rika_Audio
 
             void MT()
             {
+                WindowManager.Close(typeof(HowToMasterWindow));
+
                 Logger.Log($"Starting making model from {wavs.Length} audios.");
 
                 weights = NormaliseWeights(weights);
@@ -36,17 +359,115 @@ namespace Rika_Audio
 
                 for (int i = 0; i < wavs.Length; i++)
                 {
-                    byte[] wavBytes = File.ReadAllBytes(wavs[i]);
-                    var wav = WavParser.Parse(wavBytes);
-                    string name = GetName(wavs[i]);
-                    float[,] model = ProcessOne(wav, name);
+                    var model = MakeOneModel(wavs[i]);
                     model = Multiply(model, weights[i]);
                     result = SummModels(result, model);
                 }
 
-                DrawModel(result);
+                SaveModel(result, name);
+                DrawModel(result, name);
+                LoadModelsPaths();
+                WindowManager.Close(typeof(HowToMasterWindow));
+                WindowManager.Open(typeof(HowToMasterWindow));
+                Thread.Sleep(250);
+                SelectModel(name);
 
-                Logger.Log($"Model maked.");
+                Logger.Log($"Model maked. Done.");
+            }
+        }
+
+        public static float[,] MakeOneModel(string wavPath)
+        {
+            byte[] wavBytes = File.ReadAllBytes(wavPath);
+            _ourWav = WavParser.Parse(wavBytes);
+            string name = GetName(wavPath);
+            return ProcessOne(_ourWav, name);
+        }
+
+        public static void SelectModel(string name)
+        {
+            if (WindowManager._howToMasterWindow != null)
+            {
+                WindowManager._howToMasterWindow.Dispatcher.Invoke(() =>
+                {
+                    Params._selectedModelId = WindowManager._howToMasterWindow.ModelsComboBox.Items.IndexOf(name);
+                    Params._selectedModelPath = _modelsPaths[Params._selectedModelId];
+
+                    if (Params._selectedModelId >= 0)
+                        WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
+                    else
+                        WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = -1;
+                });
+
+                File.WriteAllText($"{Params._pf}Params\\SelectedModelName.txt", $"{name}");
+            }
+        }
+
+        public static void LoadModelsPaths()
+        {
+            _modelsPaths = Directory.GetFiles($"{Params._pf}Models");
+        }
+
+        public static void LoadModelsToComboBox()
+        {
+            if (WindowManager._howToMasterWindow != null)
+            {
+                string[] fileNames = _modelsPaths
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .ToArray();
+
+                WindowManager._howToMasterWindow.ModelsComboBox.Items.Clear();
+                WindowManager._howToMasterWindow.ModelsComboBox.ItemsSource = fileNames;
+                WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
+            }
+        }
+
+        public static void SaveModel(float[,] model, string name)
+        {
+            string path = $"{Params._pf}Models\\{name}.bin";
+            using (var stream = File.OpenWrite(path))
+            using (var writer = new BinaryWriter(stream))
+            {
+                // Записываем размерности массива
+                writer.Write(model.GetLength(0));
+                writer.Write(model.GetLength(1));
+
+                // Записываем все элементы массива
+                for (int i = 0; i < model.GetLength(0); i++)
+                {
+                    for (int j = 0; j < model.GetLength(1); j++)
+                    {
+                        writer.Write(model[i, j]);
+                    }
+                }
+            }
+
+            Logger.Log($"Model {name} saved.");
+        }
+
+        public static float[,] LoadModel(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            using (var reader = new BinaryReader(stream))
+            {
+                // Читаем размерности массива
+                int dim0 = reader.ReadInt32();
+                int dim1 = reader.ReadInt32();
+
+                // Создаем новый массив
+                float[,] model = new float[dim0, dim1];
+
+                // Читаем все элементы массива
+                for (int i = 0; i < dim0; i++)
+                {
+                    for (int j = 0; j < dim1; j++)
+                    {
+                        model[i, j] = reader.ReadSingle();
+                    }
+                }
+
+                return model;
             }
         }
 
@@ -107,100 +528,154 @@ namespace Rika_Audio
         public static float[,] ProcessOneChannel(bool isRight, Wav wav, string adder)
         {
             if (isRight)
-                wav.SamplesR = Specralize($"The R {adder}", wav.SamplesR, wav);
-            else
-                wav.SamplesL = Specralize($"The L {adder}", wav.SamplesL, wav);
-
-            float[,] model = FindModel();
-
-            return model;
-        }
-
-
-        public static void LogarythmiseFft()
-        {
-            for (int spectrum = 0; spectrum < _width; spectrum++)
             {
-                for (int frequencyId = 0; frequencyId < Params._windowSize; frequencyId++)
-                {
-                    _fft[spectrum][frequencyId].Magnitude = ToLogarithmic(_fft[spectrum][frequencyId].Magnitude);
-                }
+                Specralize($"The R {adder}", wav, 1);
+                return FindModel(1);
+            }
+            else
+            {
+                Specralize($"The L {adder}", wav, 0);
+                return FindModel(0);
             }
         }
 
-        public static double ToLogarithmic(double x, double baseLog = 10.0)
+        public static void LogarythmiseFft(int channelId)
         {
-            if (x < 0 || x > 1)
-                throw new ArgumentOutOfRangeException(nameof(x), "Значение должно быть в диапазоне [0, 1].");
+            Logger.Log($"Logarythmising fft...");
 
-            if (x == 0)
-                return 0;
+            for (int spectrum = 0; spectrum < _width; spectrum++)
+                for (int frequencyId = 0; frequencyId < Params._windowSize; frequencyId++)
+                {
+                    double before = _fft[channelId][spectrum][frequencyId].CalcMagnitude;
+                    double after = ToLogarithmic(before);
+                    double d = after / before;
+                    _fft[channelId][spectrum][frequencyId] *= d;
+                    _fft[channelId][spectrum][frequencyId].Magnitude = after;
+                    
+                    if (double.IsNaN(_fft[channelId][spectrum][frequencyId].CalcMagnitude))
+                    {
 
-            // Нормализуем логарифмическое значение в [0, 1]
-            double logValue = Math.Log(x, baseLog);
-            double minLog = Math.Log(1.0 / baseLog, baseLog); // Минимальный логарифм для x = 0.1 (пример)
+                    }
+                }
 
-            // Масштабируем в [0, 1]
-            double normalized = (logValue + Math.Abs(minLog)) / Math.Abs(minLog);
-
-            // Ограничиваем, чтобы избежать выхода за границы из-за погрешностей
-            return Math.Max(0, Math.Min(1, normalized));
+            Logger.Log($"Fft logarythmised (FULL).");
         }
 
-        public static double FromLogarithmic(double y, double baseLog = 10.0)
+        public static void DelogarythmiseFft(int channelId)
         {
-            if (y < 0 || y > 1)
-                throw new ArgumentOutOfRangeException(nameof(y), "Значение должно быть в диапазоне [0, 1].");
+            Logger.Log($"Delogarythmising fft...");
 
-            if (y == 0)
-                return 0;
+            for (int spectrum = 0; spectrum < _width; spectrum++)
+                for (int frequencyId = 0; frequencyId < Params._windowSize; frequencyId++)
+                {
+                    double before = _fft[channelId][spectrum][frequencyId].CalcMagnitude;
+                    double after = FromLogarithmic(before);
+                    double d = after / before;
+                    _fft[channelId][spectrum][frequencyId] *= d;
+                    _fft[channelId][spectrum][frequencyId].Magnitude = after;
 
-            double minLog = Math.Log(1.0 / baseLog, baseLog);
-            double logValue = y * Math.Abs(minLog) - Math.Abs(minLog);
+                    if (double.IsNaN(_fft[channelId][spectrum][frequencyId].CalcMagnitude))
+                    {
 
-            double x = Math.Pow(baseLog, logValue);
+                    }
+                }
 
-            // Ограничиваем, чтобы избежать выхода за границы из-за погрешностей
-            return Math.Max(0, Math.Min(1, x));
+            Logger.Log($"Fft delogarythmised!");
         }
 
-        public static float ToLogarithmic(float x, float baseLog = 10f)
+        public static double ToLogarithmic(double x)
+        {
+            if (x < 0.0 || x > 1.0)
+                throw new ArgumentOutOfRangeException(nameof(x), "Value must be in range [0, 1].");
+
+            const double minDB = -80.0; // Минимальный динамический диапазон
+            const double maxDB = 0.0;   // Максимальное значение (0 дБ)
+
+            // Обработка нулевых и малых значений
+            if (x <= Math.Pow(10, minDB / 20.0))
+                return Math.Pow(10, minDB / 20.0);
+
+            // Прямое преобразование в децибелы
+            double dB = 20.0 * Math.Log10(x);
+
+            // Нормализация в диапазон [0, 1]
+            double normalized = (dB - minDB) / (maxDB - minDB);
+
+            if (double.IsNaN(normalized))
+            {
+
+            }
+
+            return Math.Max(0.0, Math.Min(1.0, normalized));
+        }
+
+        public static double FromLogarithmic(double y)
+        {
+            if (y < 0.0)
+                return 0.0;
+            if (y > 1.0)
+                return 1.0;
+
+            const double minDB = -80.0; // Должно совпадать с ToLogarithmic
+            const double maxDB = 0.0;   // Должно совпадать с ToLogarithmic
+
+            // Обработка нулевого значения
+            if (y == 0.0)
+                return 0.0;
+
+            // Денормализация из [0, 1] в децибелы
+            double dB = y * (maxDB - minDB) + minDB;
+
+            // Преобразование из децибел в линейную величину
+            double res = Math.Pow(10.0, dB / 20.0);
+
+            if (double.IsNaN(res))
+            {
+
+            }
+
+            return res;
+        }
+        public static float ToLogarithmic(float x)
         {
             if (x < 0f || x > 1f)
                 throw new ArgumentOutOfRangeException(nameof(x), "Значение должно быть в диапазоне [0, 1].");
 
-            if (x == 0f)
+            const float minDB = -80f; // Минимальный динамический диапазон
+            const float maxDB = 0f;   // Максимальное значение (0 дБ)
+
+            // Обработка нулевых и малых значений
+            if (x <= MathF.Pow(10, minDB / 20f))
                 return 0f;
 
-            // Нормализуем логарифмическое значение в [0, 1]
-            float logValue = MathF.Log(x, baseLog);
-            float minLog = MathF.Log(1f / baseLog, baseLog); // Минимальный логарифм для x = 0.1
+            // Прямое преобразование в децибелы
+            float dB = 20f * MathF.Log10(x);
 
-            // Масштабируем в [0, 1]
-            float normalized = (logValue + MathF.Abs(minLog)) / MathF.Abs(minLog);
-
-            // Ограничиваем, чтобы избежать выхода за границы из-за погрешностей
+            // Нормализация в диапазон [0, 1]
+            float normalized = (dB - minDB) / (maxDB - minDB);
             return MathF.Max(0f, MathF.Min(1f, normalized));
         }
 
-        public static float FromLogarithmic(float y, float baseLog = 10f)
+        public static float FromLogarithmic(float y)
         {
             if (y < 0f || y > 1f)
                 throw new ArgumentOutOfRangeException(nameof(y), "Значение должно быть в диапазоне [0, 1].");
 
+            const float minDB = -80f; // Должно совпадать с ToLogarithmic
+            const float maxDB = 0f;   // Должно совпадать с ToLogarithmic
+
+            // Обработка нулевого значения
             if (y == 0f)
                 return 0f;
 
-            float minLog = MathF.Log(1f / baseLog, baseLog);
-            float logValue = y * MathF.Abs(minLog) - MathF.Abs(minLog);
+            // Денормализация из [0, 1] в децибелы
+            float dB = y * (maxDB - minDB) + minDB;
 
-            float x = MathF.Pow(baseLog, logValue);
-
-            // Ограничиваем, чтобы избежать выхода за границы из-за погрешностей
-            return MathF.Max(0f, MathF.Min(1f, x));
+            // Преобразование из децибел в линейную величину
+            return MathF.Pow(10f, dB / 20f);
         }
 
-        static float[,] FindModel()
+        static float[,] FindModel(int channelId)
         {
             float[,] model = new float[Params._windowSize / 2, Params._resolution];
 
@@ -208,7 +683,17 @@ namespace Rika_Audio
             {
                 for (int frequencyId = 0; frequencyId < Params._windowSize / 2; frequencyId++)
                 {
-                    model[frequencyId, (int)Math.Floor(_fft[spectrum][frequencyId].Magnitude * Params._resolution - 1e-10)] += 1f / _width;
+                    int antifrq = Params._windowSize - 1 - frequencyId;
+
+                    double mag1 = _fft[channelId][spectrum][frequencyId].Magnitude;
+                    double mag2 = _fft[channelId][spectrum][antifrq].Magnitude;
+
+                    double mag = (mag1 + mag2) / 2;
+
+                    var v = (int)Math.Floor(mag * Params._resolution);
+                    if (v == Params._resolution)
+                        v -= 1;
+                    model[frequencyId, v] += 1f / _width;
                 }
             }
 
@@ -236,7 +721,26 @@ namespace Rika_Audio
             return model;
         }
 
-        static float[] Specralize(string adder, float[] samples, Wav wav)
+        static void Despectralise(int channelId)
+        {
+            Logger.Log($"Despectralising of channel {channelId}...");
+
+            _ourWav.Samples[channelId] = new float[_ourWav.Samples[channelId].Length];
+
+            for (int x = 0; x * _step < _ourWav.Samples[channelId].Length - Params._windowSize; x++)
+            {
+                var signal = FFT.IFFT(_fft[channelId][x]); //HERE!!!!!!!!!!!
+
+                for (int y = 0; y < Params._windowSize; y++) //!!!!!!!!!!!!!!!!!!!!!!
+                    _ourWav.Samples[channelId][x * _step + y] += Convert.ToSingle(signal[y].Real);
+            }
+
+            _ourWav.Samples[channelId] = Normalise(_ourWav.Samples[channelId]);
+
+            Logger.Log($"Despectralisation of channel ({channelId}) done.");
+        }
+
+        static void Specralize(string adder, Wav wav, int channelId)
         {
             InitSpectraliser();
 
@@ -248,9 +752,9 @@ namespace Rika_Audio
 
             for (int x = 0; x < _width; x++)
             {
-                var input = WindowFunction.Do(samples, _startIndex, Params._windowSize, Params._windowType);
+                Complex[] input = WindowFunction.Do(wav.Samples[channelId], _startIndex, Params._windowSize, Params._windowType);
                 double max = 0;
-                _fft[x] = FFT.Do(input, out max);
+                _fft[channelId][x] = FFT.Do(input, out max);
 
                 _startIndex += _step;
 
@@ -287,16 +791,15 @@ namespace Rika_Audio
             }
 
             samples = Normalise(samples);
-
+            
             Logger.Log($"Equalisation of ({adder}) done.");*/
 
-            NormaliseFft();
+            //NormaliseFft(channelId); //?????????
+            LogarythmiseFft(channelId); /////////
 
-            Draw(adder);
+            Draw(adder, channelId); //Turn off?
 
             Logger.Log($"Spectralisation of ({adder}) done.");
-
-            return samples;
         }
 
         public static float[] Normalise(float[] samples)
@@ -325,17 +828,28 @@ namespace Rika_Audio
             return samples;
         }
 
-        public static void NormaliseFft()
+        public static void NormaliseFft(int channelId)
         {
+            //Should I delete this?
+
             Logger.Log($"Normalising fft...");
             for (int x = 0; x < _width; x++)
                 for (int y = 0; y < Params._windowSize; y++)
-                    _fft[x][y] /= _globalMax;
+                {
+                    _fft[channelId][x][y] /= _globalMax;
+
+                    _fft[channelId][x][y].Magnitude = _fft[channelId][x][y].CalcMagnitude;
+
+                    if (double.IsNaN(_fft[channelId][x][y].Magnitude))
+                    {
+
+                    }
+                }
 
             Logger.Log("Fft normalised.");
         }
 
-        public static void Draw(string adder)
+        public static void Draw(string adder, int channelId)
         {
             Logger.Log($"Drawing ({adder})...");
 
@@ -347,8 +861,8 @@ namespace Rika_Audio
             {
                 for (int y = 0; y < Params._windowSize / 2; y++)
                 {
-                    double magnitude = _fft[x][y].Magnitude;
-                    double phase = _fft[x][y].Phase;
+                    double magnitude = _fft[channelId][x][y].Magnitude;
+                    double phase = _fft[channelId][x][y].Phase;
 
                     byte blue = (byte)(magnitude * 255);
 
@@ -381,13 +895,15 @@ namespace Rika_Audio
             SaveBitmap(_bitmap2, $"The FFT Amplitude {adder}");
         }
 
-        public static void DrawModel(float[,] model)
+        public static void DrawModel(float[,] model, string name)
         {
-            Logger.Log("Drawing model...");
+            Logger.Log($"Drawing model {name}...");
+
+            Logger.Log($"Logarythmising model {name}...");
 
             model = ConvertToLogScale(model);
 
-            Logger.Log("Model logarythmised.");
+            Logger.Log($"Model {name} logarythmised.");
 
             // Получаем размеры модели
             int width = model.GetLength(0);
@@ -433,9 +949,9 @@ namespace Rika_Audio
                 0
             );
 
-            SaveBitmap(bitmap, $"Model");
+            SaveBitmap(bitmap, $"Model {name}");
 
-            Logger.Log("Model drawn.");
+            Logger.Log($"Model {name} drawn.");
         }
 
         public static float[,] ConvertToLogScale(float[,] array)
@@ -517,7 +1033,16 @@ namespace Rika_Audio
 
         public static void InitSpectraliser()
         {
-            _fft = new Complex[_width][];
+            if (_fft == null)
+                _fft = new Complex[2][][];
+            if (_fft[0] == null)
+                _fft[0] = new Complex[_width][];
+            if (_fft[1] == null)
+                _fft[1] = new Complex[_width][];
+            if (_fft[0].Length != _width)
+                _fft[0] = new Complex[_width][];
+            if (_fft[1].Length != _width)
+                _fft[1] = new Complex[_width][];
 
             _startIndex = 0;
         }
@@ -537,8 +1062,14 @@ namespace Rika_Audio
         {
             _startIndex = 0;
             _step = (int)(Params._windowSize * (1 - Params._overlap));
-            _width = (int)Math.Ceiling((double)(wav.SamplesL.Length - Params._windowSize) / _step) + 1;
-            _fft = new Complex[_width][];
+            _width = (int)Math.Ceiling((double)(wav.Samples[0].Length - Params._windowSize) / _step) + 1;
+
+            if (_fft == null)
+                _fft = new Complex[2][][];
+            if (_fft[0] == null)
+                _fft[0] = new Complex[_width][];
+            if (_fft[1] == null)
+                _fft[1] = new Complex[_width][];
         }
 
         static string GetName(string path) => System.IO.Path.GetFileNameWithoutExtension(path);
