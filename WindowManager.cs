@@ -16,7 +16,7 @@ namespace Rika_Audio
         public static MasteringWindow _masteringWindow;
         public static HowToMasterWindow _howToMasterWindow;
         public static StretcherWindow _stretcherWindow;
-        public static StretcherWindow _editorWindow;
+        public static EditorWindow _editorWindow;
 
         public static void Open(Type windowT)
         {
@@ -29,6 +29,7 @@ namespace Rika_Audio
                 else if (windowT == typeof(MasteringWindow)) window = _masteringWindow;
                 else if (windowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
                 else if (windowT == typeof(StretcherWindow)) window = _stretcherWindow;
+                else if (windowT == typeof(EditorWindow)) window = _editorWindow;
 
                 if (window == null || PresentationSource.FromVisual(window) == null)
                 {
@@ -105,6 +106,16 @@ namespace Rika_Audio
                         _stretcherWindow = new StretcherWindow();
                         _stretcherWindow.Closed += (s, e) => _stretcherWindow = null;
                         _stretcherWindow.Show();
+                    });
+                }
+                else if (type == typeof(EditorWindow))
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _editorWindow?.Close();
+                        _editorWindow = new EditorWindow();
+                        _editorWindow.Closed += (s, e) => _editorWindow = null;
+                        _editorWindow.Show();
                     });
                 }
             }

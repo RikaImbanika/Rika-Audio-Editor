@@ -5,8 +5,53 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rika_Audio"
         mc:Ignorable="d"
-        Title="EditorWindow" Height="450" Width="800">
+        WindowState="Normal"
+        Title="EditorWindow" Height="650" Width="1280" WindowStartupLocation="CenterScreen">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel
+            FlowDirection="LeftToRight"
+            Orientation="Horizontal">
+
+            <Button FontSize="28" 
+                    Margin="0,0,-5,0" 
+                    BorderThickness="5"
+                    BorderBrush="Black"
+                    Background="White"
+                    Click="NewClick">
+                <TextBlock Text="   New   "></TextBlock>
+            </Button>
+            
+            <Button FontSize="28" 
+                    Margin="0,0,-5,0" 
+                    BorderThickness="5"
+                    BorderBrush="Black"
+                    Background="White"
+                    Click="OpenClick">
+                <TextBlock Text="   Open   "></TextBlock>
+            </Button>
+            
+            <Button FontSize="28" 
+        Margin="0,0,-5,0" 
+        BorderThickness="5"
+        BorderBrush="Black"
+        Background="White"
+                    Click="SaveClick">
+                <TextBlock Text="   Save   "></TextBlock>
+            </Button>
+            
+            <Button FontSize="28" 
+        Margin="0,0,0,0" 
+        BorderThickness="5"
+        BorderBrush="Black"
+        Background="White"
+                    Click="SaveAssClick">
+                <TextBlock Text="   Save As   "></TextBlock>
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -23,5 +23,25 @@ namespace Rika_Audio
         {
             InitializeComponent();
         }
+
+        private void OpenClick(object sender, RoutedEventArgs e)
+        {
+            MUSICMAKER.Open();
+        }
+
+        private void NewClick(object sender, RoutedEventArgs e)
+        {
+            MUSICMAKER.New();
+        }
+
+        private void SaveClick(object sender, RoutedEventArgs e)
+        {
+            MUSICMAKER.Save();
+        }
+
+        private void SaveAssClick(object sender, RoutedEventArgs e)
+        {
+            MUSICMAKER.SaveAss();
+        }
     }
 }

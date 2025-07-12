@@ -12,6 +12,8 @@ namespace Rika_Audio
 {
     public static class Params
     {
+        public static string _MMStatPath;
+
         public static int _windowSize = 2048;
         public static string _windowType = "Hanning";
         public static float _overlap = 0.5f;
@@ -21,6 +23,10 @@ namespace Rika_Audio
         public static string _selectedModelPath;
         public static string _selectedModelName;
 
+        public static ulong _musicMakerTracksMakedCount;
+        public static ulong _musicMakerGlobalSavesCounter;
+        public static ulong _appVersion;
+
         public static void Init()
         {
             _pf = Environment.CurrentDirectory + "\\ProgramFiles\\";
@@ -28,6 +34,8 @@ namespace Rika_Audio
             MASTERER.LoadModelsPaths();
             _selectedModelId = Array.IndexOf(MASTERER._modelsPaths, $"{_pf}Models\\{_selectedModelName}.bin");
             _selectedModelPath = MASTERER._modelsPaths[_selectedModelId];
+            _appVersion = 0;
+            _MMStatPath = $"{_pf}Params\\MMStat";
         }
 
         public static void LateInit()

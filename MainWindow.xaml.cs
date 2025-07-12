@@ -26,6 +26,7 @@ public partial class MainWindow : Window
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
+        Logger.Log("U SELECTED DECLICKER TESO!");
         WindowManager.Open(typeof(RepairWindow));
         WindowManager.Open(typeof(LogsWindow));
     }
@@ -34,6 +35,7 @@ public partial class MainWindow : Window
     {
         WindowManager.Open(typeof(MasteringWindow));
         WindowManager.Open(typeof(LogsWindow));
+        Logger.Log("U SELECTED MASTERING TESO!");
         Logger.Log("Превет, как дела, что делаешь?");
     }
 
@@ -41,6 +43,7 @@ public partial class MainWindow : Window
     {
         WindowManager.Open(typeof(StretcherWindow));
         WindowManager.Open(typeof(LogsWindow));
+        Logger.Log("U SELECTED STRETCER TESO!");
         Logger.Log("Превет, как дела, что делаешь тесо?");
         Logger.Log("Now select 2 (TWO) tracks, please.");
         Logger.Log("**It doesn't working now.");
@@ -50,7 +53,9 @@ public partial class MainWindow : Window
     {
         WindowManager.Open(typeof(LogsWindow));
         WindowManager.Open(typeof(EditorWindow));
+        Logger.Log("U SELECTED MUSID MAKER TESO!");
         Logger.Log("Окей, бро, щас ми будем хуячить музыку тесо.");
+        MUSICMAKER.Init();
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
