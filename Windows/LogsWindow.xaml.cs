@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     /// <summary>
     /// Interaction logic for LogsWindow.xaml

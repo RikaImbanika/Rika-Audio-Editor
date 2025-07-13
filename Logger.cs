@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public static class Logger
     {

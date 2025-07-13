@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     /// <summary>
     /// Interaction logic for RepairWindow.xaml
@@ -47,7 +47,7 @@ namespace Rika_Audio
             else
             {
                 byte[] wavBytes = File.ReadAllBytes(_wavPath);
-                var wav = WavParser.Parse(wavBytes);
+                var wav = AudioParser.Parse(wavBytes);
 
                 string ct = CT.Text;
                 string ps = PS.Text;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public static class WindowManager
     {
@@ -16,7 +16,8 @@ namespace Rika_Audio
         public static MasteringWindow _masteringWindow;
         public static HowToMasterWindow _howToMasterWindow;
         public static StretcherWindow _stretcherWindow;
-        public static EditorWindow _editorWindow;
+        public static MusicMakerWindow _editorWindow;
+        public static PlayerWindow _playerWindow;
 
         public static void Open(Type windowT)
         {
@@ -29,7 +30,8 @@ namespace Rika_Audio
                 else if (windowT == typeof(MasteringWindow)) window = _masteringWindow;
                 else if (windowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
                 else if (windowT == typeof(StretcherWindow)) window = _stretcherWindow;
-                else if (windowT == typeof(EditorWindow)) window = _editorWindow;
+                else if (windowT == typeof(MusicMakerWindow)) window = _editorWindow;
+                else if (windowT == typeof(PlayerWindow)) window = _playerWindow;
 
                 if (window == null || PresentationSource.FromVisual(window) == null)
                 {
@@ -108,14 +110,24 @@ namespace Rika_Audio
                         _stretcherWindow.Show();
                     });
                 }
-                else if (type == typeof(EditorWindow))
+                else if (type == typeof(MusicMakerWindow))
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         _editorWindow?.Close();
-                        _editorWindow = new EditorWindow();
+                        _editorWindow = new MusicMakerWindow();
                         _editorWindow.Closed += (s, e) => _editorWindow = null;
                         _editorWindow.Show();
+                    });
+                }
+                else if (type == typeof(PlayerWindow))
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        _playerWindow?.Close();
+                        _playerWindow = new PlayerWindow();
+                        _playerWindow.Closed += (s, e) => _playerWindow = null;
+                        _playerWindow.Show();
                     });
                 }
             }
@@ -130,7 +142,8 @@ namespace Rika_Audio
             else if (WindowT == typeof(MasteringWindow)) window = _masteringWindow;
             else if (WindowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
             else if (WindowT == typeof(StretcherWindow)) window = _stretcherWindow;
-            else if (WindowT == typeof(EditorWindow)) window = _editorWindow;
+            else if (WindowT == typeof(MusicMakerWindow)) window = _editorWindow;
+            else if (WindowT == typeof(PlayerWindow)) window = _playerWindow;
 
             if (window == null) return;
 
@@ -146,7 +159,8 @@ namespace Rika_Audio
                         else if (WindowT == typeof(MasteringWindow)) _masteringWindow = null;
                         else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                         else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
-                        else if (WindowT == typeof(EditorWindow)) _stretcherWindow = null;
+                        else if (WindowT == typeof(MusicMakerWindow)) _stretcherWindow = null;
+                        else if (WindowT == typeof(PlayerWindow)) _playerWindow = null;
                     }
                 });
             }
@@ -159,7 +173,8 @@ namespace Rika_Audio
                     else if (WindowT == typeof(MasteringWindow)) _masteringWindow = null;
                     else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                     else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
-                    else if (WindowT == typeof(EditorWindow)) _stretcherWindow = null;
+                    else if (WindowT == typeof(MusicMakerWindow)) _stretcherWindow = null;
+                    else if (WindowT == typeof(PlayerWindow)) _playerWindow = null;
                 });
             }
         }

@@ -1,57 +1,83 @@
-﻿<Window x:Class="Rika_Audio.EditorWindow"
+﻿<Window x:Class="RIKA_AUDIO.MusicMakerWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Rika_Audio"
-        mc:Ignorable="d"
+        xmlns:local="clr-namespace:RIKA_AUDIO"
+        mc:Ignorable="d" 
         WindowState="Normal"
-        Title="EditorWindow" Height="650" Width="1280" WindowStartupLocation="CenterScreen">
+        Background="#5500FF"
+        Title="RIKA AUDIO - MUSIC MAKER" Height="735" Width="1365" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <StackPanel
             FlowDirection="LeftToRight"
             Orientation="Horizontal">
 
-            <Button FontSize="28" 
+            <Button FontSize="18"
+                    FontWeight="ExtraBold"
                     Margin="0,0,-5,0" 
-                    BorderThickness="5"
+                    BorderThickness="3"
                     BorderBrush="Black"
                     Background="White"
                     Click="NewClick">
                 <TextBlock Text="   New   "></TextBlock>
             </Button>
-            
-            <Button FontSize="28" 
+
+            <Button FontSize="18" 
+                    FontWeight="ExtraBold"
                     Margin="0,0,-5,0" 
-                    BorderThickness="5"
+                    BorderThickness="3"
                     BorderBrush="Black"
                     Background="White"
                     Click="OpenClick">
                 <TextBlock Text="   Open   "></TextBlock>
             </Button>
-            
-            <Button FontSize="28" 
+
+            <Button FontSize="18" 
+                    FontWeight="ExtraBold"
         Margin="0,0,-5,0" 
-        BorderThickness="5"
+        BorderThickness="3"
         BorderBrush="Black"
         Background="White"
                     Click="SaveClick">
                 <TextBlock Text="   Save   "></TextBlock>
             </Button>
-            
-            <Button FontSize="28" 
+
+            <Button FontSize="18"
+                    FontWeight="ExtraBold"
         Margin="0,0,0,0" 
-        BorderThickness="5"
+        BorderThickness="3"
         BorderBrush="Black"
         Background="White"
                     Click="SaveAssClick">
                 <TextBlock Text="   Save As   "></TextBlock>
             </Button>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="1"
+    FlowDirection="LeftToRight"
+    Orientation="Horizontal">
+
+            <Button 
+            Margin="0,0,-5,-5" 
+            BorderThickness="3"
+            BorderBrush="Black"
+            Background="White"
+            Click="AddAudio">
+                <TextBlock FontSize="28"
+                           FontWeight="Heavy"
+                           Foreground="green"
+                           FontFamily="Verdana"
+                           Text="+"
+                           Margin="2,-5,3,0"
+                           />
+            </Button>
+            
         </StackPanel>
     </Grid>
 </Window>

@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rika_Audio;
+namespace RIKA_AUDIO;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -52,8 +52,8 @@ public partial class MainWindow : Window
     private void OkayBro(object sender, RoutedEventArgs e)
     {
         WindowManager.Open(typeof(LogsWindow));
-        WindowManager.Open(typeof(EditorWindow));
-        Logger.Log("U SELECTED MUSID MAKER TESO!");
+        WindowManager.Open(typeof(MusicMakerWindow));
+        Logger.Log("U SELECTED MUSIC MAKER TESO!");
         Logger.Log("Окей, бро, щас ми будем хуячить музыку тесо.");
         MUSICMAKER.Init();
     }
@@ -61,5 +61,17 @@ public partial class MainWindow : Window
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         Params.LateInit();
+    }
+
+    private void PlayerClick(object sender, RoutedEventArgs e)
+    {
+        MessageBoxResult mbr = MessageBox.Show("Are u sure?\r\nSometimes it is better to create music,\r\nnot to listen it.\r\n", "Hello", MessageBoxButton.YesNo);
+
+        if (mbr == MessageBoxResult.Yes)
+        {
+            WindowManager.Open(typeof(LogsWindow));
+            WindowManager.Open(typeof(PlayerWindow));
+            Logger.Log("U SELECTED SPECTROGRAM PLAYER TESO!");
+        }
     }
 }

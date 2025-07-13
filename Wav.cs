@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public class Wav
     {

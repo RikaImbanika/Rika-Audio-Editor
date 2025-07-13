@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Windows.Media;
 using System.Windows.Controls;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public static class Params
     {
@@ -44,6 +44,8 @@ namespace Rika_Audio
             Uri uri = new Uri(path);
             var gg = new System.Windows.Media.Imaging.BitmapImage(uri);
             WindowManager._mainWindow.PIC.Source = gg;
+
+            Calculator.Calculate();
         }
     }
 }

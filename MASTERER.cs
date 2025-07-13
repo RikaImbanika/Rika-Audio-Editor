@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public static class MASTERER
     {
@@ -166,7 +166,7 @@ namespace Rika_Audio
             for (int i = 0; i < how.Length; i++)
             {
                 float value = how[i] * count / sum;
-                counts[i] = (int)Math.Floor(value);
+                counts[i] = (int)System.Math.Floor(value);
                 fractions[i] = value - counts[i];
                 sum2 += counts[i];
             }
@@ -379,7 +379,7 @@ namespace Rika_Audio
         public static float[,] MakeOneModel(string wavPath)
         {
             byte[] wavBytes = File.ReadAllBytes(wavPath);
-            _ourWav = WavParser.Parse(wavBytes);
+            _ourWav = AudioParser.Parse(wavBytes);
             string name = GetName(wavPath);
             return ProcessOne(_ourWav, name);
         }
@@ -592,11 +592,11 @@ namespace Rika_Audio
             const double maxDB = 0.0;   // Максимальное значение (0 дБ)
 
             // Обработка нулевых и малых значений
-            if (x <= Math.Pow(10, minDB / 20.0))
-                return Math.Pow(10, minDB / 20.0);
+            if (x <= System.Math.Pow(10, minDB / 20.0))
+                return System.Math.Pow(10, minDB / 20.0);
 
             // Прямое преобразование в децибелы
-            double dB = 20.0 * Math.Log10(x);
+            double dB = 20.0 * System.Math.Log10(x);
 
             // Нормализация в диапазон [0, 1]
             double normalized = (dB - minDB) / (maxDB - minDB);
@@ -606,7 +606,7 @@ namespace Rika_Audio
 
             }
 
-            return Math.Max(0.0, Math.Min(1.0, normalized));
+            return System.Math.Max(0.0, System.Math.Min(1.0, normalized));
         }
 
         public static double FromLogarithmic(double y)
@@ -627,7 +627,7 @@ namespace Rika_Audio
             double dB = y * (maxDB - minDB) + minDB;
 
             // Преобразование из децибел в линейную величину
-            double res = Math.Pow(10.0, dB / 20.0);
+            double res = System.Math.Pow(10.0, dB / 20.0);
 
             if (double.IsNaN(res))
             {
@@ -690,7 +690,7 @@ namespace Rika_Audio
 
                     double mag = (mag1 + mag2) / 2;
 
-                    var v = (int)Math.Floor(mag * Params._resolution);
+                    var v = (int)System.Math.Floor(mag * Params._resolution);
                     if (v == Params._resolution)
                         v -= 1;
                     model[frequencyId, v] += 1f / _width;
@@ -814,7 +814,7 @@ namespace Rika_Audio
 
             foreach (float sample in samples)
             {
-                float abs = Math.Abs(sample);
+                float abs = System.Math.Abs(sample);
                 if (abs > maxAbsolute) maxAbsolute = abs;
             }
 
@@ -871,7 +871,7 @@ namespace Rika_Audio
 
                     }
 
-                    double sinPhase = Math.Sin(phase); // Диапазон: [-1, 1]
+                    double sinPhase = System.Math.Sin(phase); // Диапазон: [-1, 1]
                     byte red = (byte)(255 * magnitude);
                     byte green = (byte)(255 * magnitude);
                     if (sinPhase > 0)
@@ -974,7 +974,7 @@ namespace Rika_Audio
                     if (value == 0.0f)
                         value = 1e-10f;
                     // Применяем натуральный логарифм (можно Math.Log10 для log10)
-                    float logValue = (float)Math.Log(value);
+                    float logValue = (float)System.Math.Log(value);
                     logArray[i, j] = logValue;
 
                     if (logValue < minLog) minLog = logValue;
@@ -1062,7 +1062,7 @@ namespace Rika_Audio
         {
             _startIndex = 0;
             _step = (int)(Params._windowSize * (1 - Params._overlap));
-            _width = (int)Math.Ceiling((double)(wav.Samples[0].Length - Params._windowSize) / _step) + 1;
+            _width = (int)System.Math.Ceiling((double)(wav.Samples[0].Length - Params._windowSize) / _step) + 1;
 
             if (_fft == null)
                 _fft = new Complex[2][][];

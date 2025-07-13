@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Windows.Automation;
 using System.Windows.Media.Media3D;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public static class Declicker
     {
@@ -179,13 +179,13 @@ namespace Rika_Audio
                         for (int y = 0; y < Params._windowSize / 2; y++)
                         {
                             Complex bin = _fft[x][y];
-                            double phase = Math.Atan2(bin.Imaginary, bin.Real);
+                            double phase = System.Math.Atan2(bin.Imaginary, bin.Real);
 
                             double compensatedPhase = phase - _phaseShifts[y] * x;
 
-                            compensatedPhase %= 2 * Math.PI;
+                            compensatedPhase %= 2 * System.Math.PI;
                             if (compensatedPhase < 0)
-                                compensatedPhase += 2 * Math.PI;
+                                compensatedPhase += 2 * System.Math.PI;
 
                             _phases[x][y] = (float)(compensatedPhase / (2 * Math.PI));
                         }
@@ -200,7 +200,7 @@ namespace Rika_Audio
                                 _smoothdphases[0][y] += _dphases[x][y] / _width; //Important
                                 _smoothdphases[x][y] = _smoothdphases[x - 1][y] * 0.95f + _dphases[x][y] * 0.05f;
 
-                                _rephases[x][y] = _dphases[x][y] - Math.Abs(_smoothdphases[x][y]) * Math.Sign(_dphases[x][y]) * _horizontalThreshold;
+                                _rephases[x][y] = _dphases[x][y] - System.Math.Abs(_smoothdphases[x][y]) * System.Math.Sign(_dphases[x][y]) * _horizontalThreshold;
                                 //?
 
                                 double magnitude = _fft[x][y].Magnitude;

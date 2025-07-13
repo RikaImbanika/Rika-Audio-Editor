@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public class IMBA
     {
@@ -71,6 +71,22 @@ namespace Rika_Audio
 
             stream.Close();
             bw.DisposeAsync();
+        }
+
+        public string ToString()
+        {
+            string str = $"Bpm = {_bpm}\r\n";
+            str += $"Name = {_name}\r\n";
+            str += $"Last path = {_lastPath}\r\n";
+            str += $"Creation = {_creation}\r\n";
+            str += $"Last Save = {_lastSave}\r\n";
+            str += $"First Path = {_firstPath}\r\n";
+            str += $"Track Number = {_musicMakerTrackNumber}\r\n";
+            str += $"Music Maker Saves Counter = {_musicMakerSavesCounter}\r\n";
+            str += $"Track Saves Counter = {_trackSavesCounter}\r\n";
+            str += $"Last Load = {_lastLoad}\r\n";
+
+            return str;
         }
     }
 }

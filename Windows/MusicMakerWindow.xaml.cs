@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     /// <summary>
     /// Interaction logic for EditorWindow.xaml
     /// </summary>
-    public partial class EditorWindow : Window
+    public partial class MusicMakerWindow : Window
     {
-        public EditorWindow()
+        public MusicMakerWindow()
         {
             InitializeComponent();
         }
@@ -42,6 +42,11 @@ namespace Rika_Audio
         private void SaveAssClick(object sender, RoutedEventArgs e)
         {
             MUSICMAKER.SaveAss();
+        }
+
+        private void AddAudio(object sender, RoutedEventArgs e)
+        {
+            MUSICMAKER.AddAudio();
         }
     }
 }

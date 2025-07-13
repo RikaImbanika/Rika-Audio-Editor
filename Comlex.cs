@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rika_Audio
+namespace RIKA_AUDIO
 {
     public struct Complex
     {
@@ -21,9 +21,9 @@ namespace Rika_Audio
             Phase = phase;
         }
 
-        public double CalcMagnitude => Math.Sqrt(Real * Real + Imaginary * Imaginary);
+        public double CalcMagnitude => System.Math.Sqrt(Real * Real + Imaginary * Imaginary);
 
-        public double CalcPhase => Math.Atan2(Imaginary, Real);
+        public double CalcPhase => System.Math.Atan2(Imaginary, Real);
 
         public static Complex operator +(Complex a, Complex b)
         {
@@ -53,7 +53,7 @@ namespace Rika_Audio
 
         public static Complex operator /(Complex a, double scalar)
         {
-            if (Math.Abs(scalar) < double.Epsilon)
+            if (System.Math.Abs(scalar) < double.Epsilon)
                 throw new DivideByZeroException("Division by zero is not allowed");
 
             return new Complex(a.Real / scalar, a.Imaginary / scalar, a.Magnitude / scalar, a.Phase);
