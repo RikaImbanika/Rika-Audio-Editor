@@ -8,7 +8,7 @@ using System.Windows.Threading;
 
 namespace RIKA_AUDIO
 {
-    public static class WindowManager
+    public static class WindowsManager
     {
         public static MainWindow _mainWindow;
         public static RepairWindow _repairWindow;
@@ -17,7 +17,7 @@ namespace RIKA_AUDIO
         public static HowToMasterWindow _howToMasterWindow;
         public static StretcherWindow _stretcherWindow;
         public static MusicMakerWindow _editorWindow;
-        public static PlayerWindow _playerWindow;
+        public static AudioPlayerWindow _audioPlayerWindow;
 
         public static void Open(Type windowT)
         {
@@ -31,7 +31,7 @@ namespace RIKA_AUDIO
                 else if (windowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
                 else if (windowT == typeof(StretcherWindow)) window = _stretcherWindow;
                 else if (windowT == typeof(MusicMakerWindow)) window = _editorWindow;
-                else if (windowT == typeof(PlayerWindow)) window = _playerWindow;
+                else if (windowT == typeof(AudioPlayerWindow)) window = _audioPlayerWindow;
 
                 if (window == null || PresentationSource.FromVisual(window) == null)
                 {
@@ -120,14 +120,14 @@ namespace RIKA_AUDIO
                         _editorWindow.Show();
                     });
                 }
-                else if (type == typeof(PlayerWindow))
+                else if (type == typeof(AudioPlayerWindow))
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _playerWindow?.Close();
-                        _playerWindow = new PlayerWindow();
-                        _playerWindow.Closed += (s, e) => _playerWindow = null;
-                        _playerWindow.Show();
+                        _audioPlayerWindow?.Close();
+                        _audioPlayerWindow = new AudioPlayerWindow();
+                        _audioPlayerWindow.Closed += (s, e) => _audioPlayerWindow = null;
+                        _audioPlayerWindow.Show();
                     });
                 }
             }
@@ -143,7 +143,7 @@ namespace RIKA_AUDIO
             else if (WindowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
             else if (WindowT == typeof(StretcherWindow)) window = _stretcherWindow;
             else if (WindowT == typeof(MusicMakerWindow)) window = _editorWindow;
-            else if (WindowT == typeof(PlayerWindow)) window = _playerWindow;
+            else if (WindowT == typeof(AudioPlayerWindow)) window = _audioPlayerWindow;
 
             if (window == null) return;
 
@@ -160,7 +160,7 @@ namespace RIKA_AUDIO
                         else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                         else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
                         else if (WindowT == typeof(MusicMakerWindow)) _stretcherWindow = null;
-                        else if (WindowT == typeof(PlayerWindow)) _playerWindow = null;
+                        else if (WindowT == typeof(AudioPlayerWindow)) _audioPlayerWindow = null;
                     }
                 });
             }
@@ -174,7 +174,7 @@ namespace RIKA_AUDIO
                     else if (WindowT == typeof(HowToMasterWindow)) _howToMasterWindow = null;
                     else if (WindowT == typeof(StretcherWindow)) _stretcherWindow = null;
                     else if (WindowT == typeof(MusicMakerWindow)) _stretcherWindow = null;
-                    else if (WindowT == typeof(PlayerWindow)) _playerWindow = null;
+                    else if (WindowT == typeof(AudioPlayerWindow)) _audioPlayerWindow = null;
                 });
             }
         }

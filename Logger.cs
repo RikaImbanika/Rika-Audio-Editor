@@ -11,6 +11,7 @@ namespace RIKA_AUDIO
     {
         public static string _log;
         public static bool _updated;
+        public static bool _minimised;
 
         public static void Log(string message)
         {
@@ -34,28 +35,43 @@ namespace RIKA_AUDIO
             {
                 while (true)
                 {
-                    Thread.Sleep(200);
+                    if (!_minimised)
+                        Thread.Sleep(200);
+                    else
+                        Thread.Sleep(1000);
 
                     if (_updated)
                     {
-                        if (WindowManager._logsWindow == null)
+                        if (WindowsManager._logsWindow == null)
                         {
-                            WindowManager.Open(typeof(LogsWindow));
+                            WindowsManager.Open(typeof(LogsWindow));
                         }
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            try
+                            if (WindowsManager._logsWindow.WindowState != WindowState.Minimized)
                             {
-                                WindowManager._logsWindow.Logs.Text = _log;
-                                _updated = false;
+                                try
+                                {
+                                    WindowsManager._logsWindow.Logs.Text = _log;
+                                    _updated = false;
+                                    if (_minimised)
+                                        _minimised = false;
+                                }
+                                catch (Exception ex)
+                                {
+                                    string wtfomfg = ex.Message;
+                                    WindowsManager.Close(typeof(LogsWindow));
+                                    Thread.Sleep(666);
+                                    WindowsManager.Open(typeof(LogsWindow));
+
+                                    if (_minimised)
+                                        _minimised = false;
+                                }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                string wtfomfg = ex.Message;
-                                WindowManager.Close(typeof(LogsWindow));
-                                Thread.Sleep(666);
-                                WindowManager.Open(typeof(LogsWindow));
+                                _minimised = true;
                             }
                         });
                     }

@@ -66,7 +66,7 @@ namespace RIKA_AUDIO
 
         private void MakeModel(object sender, RoutedEventArgs e)
         {
-            WindowManager.Open(typeof(LogsWindow));
+            WindowsManager.Open(typeof(LogsWindow));
             string name = ModelName.Text;
             MASTERER.MakeModel(_wavPaths, _weights, name);
         }

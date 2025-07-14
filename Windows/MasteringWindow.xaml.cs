@@ -34,7 +34,7 @@ namespace RIKA_AUDIO
 
         private void SelHowToMaster(object sender, RoutedEventArgs e)
         {
-            WindowManager.Open(typeof(HowToMasterWindow));
+            WindowsManager.Open(typeof(HowToMasterWindow));
         }
 
         private void Master(object sender, RoutedEventArgs e)

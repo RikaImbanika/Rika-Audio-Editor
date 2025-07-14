@@ -349,7 +349,7 @@ namespace RIKA_AUDIO
 
             void MT()
             {
-                WindowManager.Close(typeof(HowToMasterWindow));
+                WindowsManager.Close(typeof(HowToMasterWindow));
 
                 Logger.Log($"Starting making model from {wavs.Length} audios.");
 
@@ -367,8 +367,8 @@ namespace RIKA_AUDIO
                 SaveModel(result, name);
                 DrawModel(result, name);
                 LoadModelsPaths();
-                WindowManager.Close(typeof(HowToMasterWindow));
-                WindowManager.Open(typeof(HowToMasterWindow));
+                WindowsManager.Close(typeof(HowToMasterWindow));
+                WindowsManager.Open(typeof(HowToMasterWindow));
                 Thread.Sleep(250);
                 SelectModel(name);
 
@@ -386,17 +386,17 @@ namespace RIKA_AUDIO
 
         public static void SelectModel(string name)
         {
-            if (WindowManager._howToMasterWindow != null)
+            if (WindowsManager._howToMasterWindow != null)
             {
-                WindowManager._howToMasterWindow.Dispatcher.Invoke(() =>
+                WindowsManager._howToMasterWindow.Dispatcher.Invoke(() =>
                 {
-                    Params._selectedModelId = WindowManager._howToMasterWindow.ModelsComboBox.Items.IndexOf(name);
+                    Params._selectedModelId = WindowsManager._howToMasterWindow.ModelsComboBox.Items.IndexOf(name);
                     Params._selectedModelPath = _modelsPaths[Params._selectedModelId];
 
                     if (Params._selectedModelId >= 0)
-                        WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
+                        WindowsManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
                     else
-                        WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = -1;
+                        WindowsManager._howToMasterWindow.ModelsComboBox.SelectedIndex = -1;
                 });
 
                 File.WriteAllText($"{Params._pf}Params\\SelectedModelName.txt", $"{name}");
@@ -410,16 +410,16 @@ namespace RIKA_AUDIO
 
         public static void LoadModelsToComboBox()
         {
-            if (WindowManager._howToMasterWindow != null)
+            if (WindowsManager._howToMasterWindow != null)
             {
                 string[] fileNames = _modelsPaths
                     .Select(Path.GetFileNameWithoutExtension)
                     .Where(name => !string.IsNullOrEmpty(name))
                     .ToArray();
 
-                WindowManager._howToMasterWindow.ModelsComboBox.Items.Clear();
-                WindowManager._howToMasterWindow.ModelsComboBox.ItemsSource = fileNames;
-                WindowManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
+                WindowsManager._howToMasterWindow.ModelsComboBox.Items.Clear();
+                WindowsManager._howToMasterWindow.ModelsComboBox.ItemsSource = fileNames;
+                WindowsManager._howToMasterWindow.ModelsComboBox.SelectedIndex = Params._selectedModelId;
             }
         }
 

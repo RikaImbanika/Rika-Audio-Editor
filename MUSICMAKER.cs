@@ -29,7 +29,7 @@ namespace RIKA_AUDIO
             _imba._musicMakerTrackNumber = Params._musicMakerTracksMakedCount + 1;
             _imba._musicMakerSavesCounter = Params._musicMakerGlobalSavesCounter;
 
-            WindowManager._editorWindow.Title = $"Rika Audio Music Maker, unsaved";
+            WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, unsaved";
 
             Logger.Log($"Initialized MUSICMAKER.");
         }
@@ -81,7 +81,7 @@ namespace RIKA_AUDIO
                 if (opening == true && File.Exists(dialog.FileName))
                 {
                     _imba = IMBA.Load(dialog.FileName);
-                    WindowManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
+                    WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
                     Logger.Log($"Opened {_imba._name} from {dialog.FileName} teso!");
                     Logger.Log(_imba.ToString());
                 }
@@ -147,7 +147,7 @@ namespace RIKA_AUDIO
 
                 IMBA.Save(_imba, _imba._lastPath);
 
-                WindowManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
+                WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
 
                 SaveMMStat();
 

@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:RIKA_AUDIO"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="RIKA AUDIO" Height="450" Width="800">
+        Background="#5500FF"
+        Closed="Window_Closed"
+        Title="RIKA IMBANIKA AUDIO - CONICHUA" Height="450" Width="900">
     <Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -21,55 +23,75 @@
 
             <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <Button Content="SPECTROGRAM PLAYER"
-Width="200" 
+                <Button
+                         FontFamily="MV Boli"
+Width="380" 
 Height="40" 
 Margin="5"
-FontSize="14"
+FontSize="32"
 Background="#FFFF7700"
 Foreground="White"
 BorderBrush="Transparent"
-Cursor="Hand" Click="PlayerClick"/>
+Cursor="Hand" Click="PlayerClick">
+                    <TextBlock Text="SPECTROGRAPH"
+               Margin="-30,-7,-30,0"/>
+                </Button>
 
-                <Button Content="DECLICKER"
-     Width="200" 
+                <Button 
+                         FontFamily="MV Boli"
+     Width="380" 
      Height="40" 
      Margin="5"
-     FontSize="14"
+     FontSize="32"
      Background="#FF2196F3"
      Foreground="White"
      BorderBrush="Transparent"
-     Cursor="Hand" Click="Button_Click"/>
+     Cursor="Hand" Click="Button_Click">
+                    <TextBlock Text="DECLICKING"
+               Margin="0,-7,0,0"/>
+                </Button>
 
-                <Button Content="STRETCHER" 
-     Width="200" 
+                <Button
+                        FontFamily="MV Boli"
+     Width="380" 
      Height="40" 
      Margin="5"
-     FontSize="14"
-     Background="DarkViolet"
+     FontSize="32"
+     Background="#FF00FF"
      Foreground="White"
      BorderBrush="Transparent"
-     Cursor="Hand" Click="StretcherClick"/>
+     Cursor="Hand" Click="StretcherClick">
+                    <TextBlock Text="STRETCHING"
+               Margin="0,-7,0,0"/>
+                </Button>
 
-                <Button Content="MUSIC MAKER" 
-     Width="200" 
+                <Button 
+                        FontFamily="MV Boli"
+     Width="380" 
      Height="40" 
      Margin="5"
-     FontSize="14"
+     FontSize="32"
      Background="#FFFF0050"
      Foreground="White"
      BorderBrush="Transparent"
-     Cursor="Hand" Click="OkayBro"/>
+     Cursor="Hand" Click="OkayBro">
+                    <TextBlock Text="MUSIC MAKING"
+                               Margin="0,-7,0,0"/>
+                </Button>
 
-                <Button Content="MASTERING" 
-     Width="200" 
+                <Button
+                        FontFamily="MV Boli"
+     Width="380" 
      Height="40" 
      Margin="5"
-     FontSize="14"
+     FontSize="32"
      Background="#FF4CAF50"
      Foreground="White"
      BorderBrush="Transparent"
-     Cursor="Hand" Click="Button_Click_1"/>
+     Cursor="Hand" Click="Button_Click_1">
+                    <TextBlock Text="MASTERING"
+               Margin="0,-7,0,0"/>
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>

@@ -1,0 +1,140 @@
+﻿<Window x:Class="RIKA_AUDIO.AudioPlayerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RIKA_AUDIO"
+        mc:Ignorable="d"
+        Background="Black"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
+        Title="RIKA IMBANIKA AUDIO - SPECTROGRAM PLAYER" Height="735" Width="1365" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Image Name="IMG"/>
+        <StackPanel Grid.Column="1">
+            <Button Content="Open"
+                    Margin="15,15,15,10"
+                    FontSize="24"
+                    Background="#FF150065"
+                    Foreground="#FFAA33FF"
+                    BorderBrush="#FF100045"
+                    Cursor="Hand" Click="OpenClick"/>
+            <Button Content="Play"
+                    Name="PlayPauseButton"
+                    Margin="15,0,15,10"
+                    FontSize="24"
+                    Background="#FF150065"
+                    Foreground="#FFAA33FF"
+                    BorderBrush="#FF100045"
+                    Cursor="Hand" Click="PlayPauseClick"/>
+            <Button Content="Next"
+                    Name="NextButt"
+                    Margin="15,0,15,10"
+                    FontSize="24"
+                    Background="#FF150065"
+                    Foreground="#FFAA33FF"
+                    BorderBrush="#FF100045"
+                    Cursor="Hand" Click="NextClick"/>
+            <Button Content="Previous"
+                    Name="PreviousButt"
+                    Margin="15,0,15,10"
+                    FontSize="24"
+                    Background="#FF150065"
+                    Foreground="#FFAA33FF"
+                    BorderBrush="#FF100045"
+                    Cursor="Hand" Click="PreviousClick"/>
+            <Button Content="Stop"
+                    Name="StopButt"
+                    Margin="15,0,15,15"
+                    FontSize="24"
+                    Background="#FF150065"
+                    Foreground="#FFAA33FF"
+                    BorderBrush="#FF100045"
+                    Cursor="Hand" Click="StopClick"/>
+        </StackPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10*"/>
+                    <ColumnDefinition Width="380*"/>
+                    <ColumnDefinition Width="10*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Name="Timeline" Grid.Row="1" Grid.Column="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="10*"/>
+                            <RowDefinition Height="85*"/>
+                            <RowDefinition Height="10*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1700*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Background="#AAAAFF" Grid.Row="0" Grid.Column="0"/>
+                        <Grid Background="#CCCCFF" Grid.Row="1" Grid.Column="0"/>
+                        <Grid Background="#CCCCFF" Grid.Row="2" Grid.Column="0"/>
+                        <Grid Background="#CCCCFF" Grid.Row="0" Grid.Column="2"/>
+                        <Grid Background="#CCCCFF" Grid.Row="1" Grid.Column="2"/>
+                        <Grid Background="#CCCCFF" Grid.Row="2" Grid.Column="2"/>
+                        <Grid Background="#CCCCFF" Grid.Row="0" Grid.Column="1"/>
+                        <Grid Background="#CCCCFF" Grid.Row="2" Grid.Column="1"/>
+
+                        <Grid Background="Transparent" Grid.Row="1" Grid.Column="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="28*"/>
+                                <RowDefinition Height="10*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1000*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Name="HereItIs" Grid.Row="1" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Background="DarkViolet">
+                                    
+                                </Grid>
+                                
+                                <Grid Background="#FFFFFFFF" Grid.Column="1">
+                                    
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid Name="Butt" 
+                        Grid.Row="1" 
+                        Grid.Column="1"
+                        Background="#01000000"
+                        MouseDown="ButtClick"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

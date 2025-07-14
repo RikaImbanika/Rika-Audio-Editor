@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RIKA_AUDIO"
         mc:Ignorable="d"
-        Title="RIKA AUDIO - DECLICKER" Width="360" SizeToContent="Height">
+        Title="RIKA IMBANIKA AUDIO - DECLICKER" Width="360" SizeToContent="Height">
     <Grid>
         <StackPanel>
             <DockPanel Margin="10,5">

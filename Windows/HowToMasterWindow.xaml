@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:RIKA_AUDIO"
         Loaded="WindowLoaded"
         mc:Ignorable="d"
-        Title="RIKA AUDIO - HOW TO MASTER" Width="335" SizeToContent="Height" Height="371">
+        Title="RIKA IMBANIKA AUDIO - HOW TO MASTER" Width="335" SizeToContent="Height" Height="371">
     <Grid>
         <StackPanel>
             <DockPanel Margin="10,5">

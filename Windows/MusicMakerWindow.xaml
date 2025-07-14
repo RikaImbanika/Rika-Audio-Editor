@@ -7,7 +7,7 @@
         mc:Ignorable="d" 
         WindowState="Normal"
         Background="#5500FF"
-        Title="RIKA AUDIO - MUSIC MAKER" Height="735" Width="1365" WindowStartupLocation="CenterScreen">
+        Title="RIKA IMBANIKA AUDIO - MUSIC MAKER" Height="735" Width="1365" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

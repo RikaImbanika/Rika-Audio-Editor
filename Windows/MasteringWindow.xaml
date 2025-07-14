@@ -6,56 +6,58 @@
         xmlns:local="clr-namespace:RIKA_AUDIO"
         mc:Ignorable="d"
         Loaded="WindowLoaded"
-        Title="RIKA AUDIO - MASTERING" Width="360" SizeToContent="Height">
+        Background="#5500FF"
+        Title="RIKA IMBANIKA AUDIO - AUTOMATIC MASTERING" Width="370" SizeToContent="Height">
     <Grid>
         <StackPanel>
-            <DockPanel Margin="10,5">
+            <DockPanel Margin="10,10,0,0">
                 <Button Content="SELECT WHAT TO MASTER" 
                 Name="WhatButton"
-                Width="250"
+                Width="350"
                 Height="35"
                 Margin="0,0,10,0"
                 FontSize="14"
-                Background="#FF2196F3"
+                Background="#AA10FF"
                 Foreground="White"
                 BorderBrush="Transparent"
                 Cursor="Hand" Click="SelWhatToMaster"/>
             </DockPanel>
 
-            <DockPanel Margin="10,5">
+            <DockPanel Margin="10,10,0,0">
                 <Button Content="SELECT HOW TO MASTER" 
-                Width="250"
+                Width="350"
                 Height="35"
                 Margin="0,0,10,0"
                 FontSize="14"
-                Background="#FF2196F3"
+                Background="#AA10FF"
                 Foreground="White"
                 BorderBrush="Transparent"
                 Cursor="Hand" Click="SelHowToMaster"/>
             </DockPanel>
 
-            <DockPanel Margin="10,5">
-                <Label Content="Output name:" 
-               Width="110"
-               Margin="0,0,10,0"
-               FontSize="14"
+            <DockPanel Margin="10,10,0,0">
+                <Label Content="  Output name:" 
+                       Foreground="White"
+               Width="120"
+               Margin="0,-2,-11,0"
+               FontSize="16"
                Padding="0,5"/>
                 <TextBox FontSize="14" 
                  x:Name="OutputName"
-                 Width="200"
+                 Width="230"
                  Padding="5"
                  Text="My Track"
                  BorderThickness="1"
                  BorderBrush="#FFB0BEC5"/>
             </DockPanel>
 
-            <DockPanel Margin="10,5">
+            <DockPanel Margin="10,10,0,10">
                 <Button Content="MASTER" 
-                     Width="250"
+                     Width="350"
                      Height="35"
                      Margin="0,0,10,0"
                      FontSize="14"
-                     Background="#FF2196F3"
+                     Background="#AA10FF"
                      Foreground="White"
                      BorderBrush="Transparent"
                      Cursor="Hand" Click="Master"/>

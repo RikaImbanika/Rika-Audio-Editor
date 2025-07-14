@@ -43,7 +43,7 @@ namespace RIKA_AUDIO
             string path = $"{_pf}Pics\\FLUTTERSHY TESO.jpg";
             Uri uri = new Uri(path);
             var gg = new System.Windows.Media.Imaging.BitmapImage(uri);
-            WindowManager._mainWindow.PIC.Source = gg;
+            WindowsManager._mainWindow.PIC.Source = gg;
 
             Calculator.Calculate();
         }

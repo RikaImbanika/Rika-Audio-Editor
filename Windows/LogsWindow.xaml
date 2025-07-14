@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RIKA_AUDIO"
         mc:Ignorable="d"
-        Title="RIKA AUDIO - LOGS" 
+        Title="RIKA IMBANIKA AUDIO - LOGS" 
         Height="600" 
         Width="800"
         WindowStartupLocation="CenterScreen">

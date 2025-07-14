@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RIKA_AUDIO"
         mc:Ignorable="d"
-        Title="RIKA AUDIO - STRETCHER" Height="650" Width="1280">
+        Title="RIKA IMBANIKA AUDIO - STRETCHER" Height="650" Width="1280">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
