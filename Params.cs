@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Windows.Media;
 using System.Windows.Controls;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class Params
     {
@@ -25,27 +25,40 @@ namespace RIKA_AUDIO
 
         public static ulong _musicMakerTracksMakedCount;
         public static ulong _musicMakerGlobalSavesCounter;
-        public static ulong _appVersion;
+        public static UInt32 _appVersion;
 
         public static void Init()
         {
-            _pf = Environment.CurrentDirectory + "\\ProgramFiles\\";
-            _selectedModelName = File.ReadAllText($"{_pf}Params\\SelectedModelName.txt");
+            ProgramFiles.Init();
+
+            _selectedModelName = File.ReadAllText($"{PF}Params\\SelectedModelName.txt");
             MASTERER.LoadModelsPaths();
-            _selectedModelId = Array.IndexOf(MASTERER._modelsPaths, $"{_pf}Models\\{_selectedModelName}.bin");
+            _selectedModelId = Array.IndexOf(MASTERER._modelsPaths, $"{PF}Models\\{_selectedModelName}.bin");
             _selectedModelPath = MASTERER._modelsPaths[_selectedModelId];
-            _appVersion = 0;
-            _MMStatPath = $"{_pf}Params\\MMStat";
+            _appVersion = 1;
+            _MMStatPath = $"{PF}Params\\MMStat";
         }
 
         public static void LateInit()
         {
-            string path = $"{_pf}Pics\\FLUTTERSHY TESO.jpg";
+            string path = $"{PF}Pics\\FLUTTERSHY TESO.jpg";
             Uri uri = new Uri(path);
             var gg = new System.Windows.Media.Imaging.BitmapImage(uri);
             WindowsManager._mainWindow.PIC.Source = gg;
 
             Calculator.Calculate();
+        }
+
+        public static string PF
+        {
+            get
+            {
+                return _pf;
+            }
+            set
+            {
+                _pf = value;
+            }
         }
     }
 }

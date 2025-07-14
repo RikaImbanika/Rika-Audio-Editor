@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public partial class StretcherWindow : Window
     {

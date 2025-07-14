@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class WindowsManager
     {
@@ -16,7 +16,7 @@ namespace RIKA_AUDIO
         public static MasteringWindow _masteringWindow;
         public static HowToMasterWindow _howToMasterWindow;
         public static StretcherWindow _stretcherWindow;
-        public static MusicMakerWindow _editorWindow;
+        public static MusicMakerWindow _musicMakerWindow;
         public static AudioPlayerWindow _audioPlayerWindow;
 
         public static void Open(Type windowT)
@@ -30,7 +30,7 @@ namespace RIKA_AUDIO
                 else if (windowT == typeof(MasteringWindow)) window = _masteringWindow;
                 else if (windowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
                 else if (windowT == typeof(StretcherWindow)) window = _stretcherWindow;
-                else if (windowT == typeof(MusicMakerWindow)) window = _editorWindow;
+                else if (windowT == typeof(MusicMakerWindow)) window = _musicMakerWindow;
                 else if (windowT == typeof(AudioPlayerWindow)) window = _audioPlayerWindow;
 
                 if (window == null || PresentationSource.FromVisual(window) == null)
@@ -43,6 +43,9 @@ namespace RIKA_AUDIO
                 {
                     if (window.WindowState == WindowState.Minimized)
                         window.WindowState = WindowState.Normal;
+
+                    if (windowT == typeof(AudioPlayerWindow))
+                        window.WindowState = WindowState.Maximized;
 
                     if (!window.IsVisible)
                         window.Show();
@@ -114,10 +117,11 @@ namespace RIKA_AUDIO
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _editorWindow?.Close();
-                        _editorWindow = new MusicMakerWindow();
-                        _editorWindow.Closed += (s, e) => _editorWindow = null;
-                        _editorWindow.Show();
+                        _musicMakerWindow?.Close();
+                        _musicMakerWindow = new MusicMakerWindow();
+                        _musicMakerWindow.Closed += (s, e) => _musicMakerWindow = null;
+                        _musicMakerWindow.Show();
+                        _musicMakerWindow.WindowState = WindowState.Maximized;
                     });
                 }
                 else if (type == typeof(AudioPlayerWindow))
@@ -128,6 +132,7 @@ namespace RIKA_AUDIO
                         _audioPlayerWindow = new AudioPlayerWindow();
                         _audioPlayerWindow.Closed += (s, e) => _audioPlayerWindow = null;
                         _audioPlayerWindow.Show();
+                        _audioPlayerWindow.WindowState = WindowState.Maximized;
                     });
                 }
             }
@@ -142,7 +147,7 @@ namespace RIKA_AUDIO
             else if (WindowT == typeof(MasteringWindow)) window = _masteringWindow;
             else if (WindowT == typeof(HowToMasterWindow)) window = _howToMasterWindow;
             else if (WindowT == typeof(StretcherWindow)) window = _stretcherWindow;
-            else if (WindowT == typeof(MusicMakerWindow)) window = _editorWindow;
+            else if (WindowT == typeof(MusicMakerWindow)) window = _musicMakerWindow;
             else if (WindowT == typeof(AudioPlayerWindow)) window = _audioPlayerWindow;
 
             if (window == null) return;

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "RIKA IMBANIKA_AUDIO/1.0.0": {
+        "runtime": {
+          "RIKA IMBANIKA_AUDIO.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RIKA IMBANIKA_AUDIO/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

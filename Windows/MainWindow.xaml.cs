@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace RIKA_AUDIO;
+namespace RIKA_IMBANIKA_AUDIO;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
@@ -22,6 +22,7 @@ public partial class MainWindow : Window
         Logger.StartLogShower();
         Params.Init();
         WindowsManager._mainWindow = this;
+        Title = $"RIKA IMBANIKA AUDIO - {ProgramFiles.GetHello()}";
     }
 
     private void Button_Click(object sender, RoutedEventArgs e)
@@ -54,7 +55,7 @@ public partial class MainWindow : Window
         WindowsManager.Open(typeof(LogsWindow));
         WindowsManager.Open(typeof(MusicMakerWindow));
         Logger.Log("U SELECTED MUSIC MAKER TESO!");
-        Logger.Log("Окей, бро, щас ми будем хуячить музыку тесо.");
+        Logger.Log("Окей, заюш, щас ми будем хуйнячить мьюзику тесо.");
         MUSICMAKER.Init();
     }
 
@@ -84,8 +85,9 @@ public partial class MainWindow : Window
 
     private void Window_Closed(object sender, EventArgs e)
     {
-        var gg = MessageBox.Show("Why did u close me???\r\nSo now I will be closed.", "RIKA IMBANIKA AUDIO - CHAO", MessageBoxButton.OK);
+        var gg = MessageBox.Show("Why did U close me???\r\nSo now I will be closed teso.", "RIKA IMBANIKA AUDIO - CHAO", MessageBoxButton.OK);
 
+        Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
         Application.Current.Shutdown();
     }
 }

@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "RIKA AUDIO/1.0.0": {
+      "RIKA IMBANIKA AUDIO/1.0.0": {
         "runtime": {
-          "RIKA AUDIO.dll": {}
+          "RIKA IMBANIKA AUDIO.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "RIKA AUDIO/1.0.0": {
+    "RIKA IMBANIKA AUDIO/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

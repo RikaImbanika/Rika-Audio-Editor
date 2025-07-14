@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class AudioPlayer
     {
@@ -89,7 +89,7 @@ namespace RIKA_AUDIO
                 var wavPaths2 = new string[_wavPaths.Length + counter];
 
                 int id = 0;
-                for(int i = 0; i < _wavPaths.Length; i++)
+                for (int i = 0; i < _wavPaths.Length; i++)
                 {
                     if (!_wavPaths[i].Equals("DELME"))
                     {
@@ -142,19 +142,17 @@ namespace RIKA_AUDIO
             }
         }
 
-        public static void Teleport(double percent)
+        public static void Teleport(double progress)
         {
-            //TimeSpan now = _player.Position;
             Duration dura = _player.NaturalDuration;
             if (dura.HasTimeSpan)
             {
-                double nowMs = dura.TimeSpan.TotalMilliseconds * percent;
+                double nowMs = dura.TimeSpan.TotalMilliseconds * progress;
                 TimeSpan now = TimeSpan.FromMilliseconds(nowMs);
                 _player.Position = now;
             }
 
-            WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
-            WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
+            SetProgress(progress);
         }
 
         public static void StartPlay()
@@ -164,6 +162,7 @@ namespace RIKA_AUDIO
                 WindowsManager._audioPlayerWindow.Title = $"{_title} - CONNICHUA!";
                 DTW($"💿 NOTHING TO PLAY, SORRE. SELECT SOMETHING, LMAO.");
                 WindowsManager._audioPlayerWindow.Timeline.Visibility = Visibility.Hidden;
+                SetProgress(0);
                 _paused = true;
             }
             else if (File.Exists(_wavPaths[_index]))
@@ -195,10 +194,11 @@ namespace RIKA_AUDIO
                 DTW($"💿 FILE NOT EXIST ({_names[_index]})");
                 Pause();
                 WindowsManager._audioPlayerWindow.Timeline.Visibility = Visibility.Hidden;
+                SetProgress(0);
                 WindowsManager._audioPlayerWindow.Title = $"{_title} - 💿 FILE NOT EXIST ({_names[_index]})";
                 Thread.Sleep(1000);
                 Next();
-            }    
+            }
         }
 
         public static void TrackTheTrack()
@@ -215,6 +215,7 @@ namespace RIKA_AUDIO
                 }
                 catch
                 {
+
                 }
 
                 Do();
@@ -229,39 +230,45 @@ namespace RIKA_AUDIO
                 {
                     while (true)
                     {
-                        Thread.Sleep(200);
-
-                        Duration dura;
-
-                        Application.Current.Dispatcher.Invoke(() =>
+                        try
                         {
-                            dura = _player.NaturalDuration;
-                        });
+                            Thread.Sleep(200);
 
-                        double percent = 0;
+                            Duration dura;
 
-                        if (WindowsManager._audioPlayerWindow != null)
-                        {
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                if (WindowsManager._audioPlayerWindow.WindowState != WindowState.Minimized)
-                                    if (WindowsManager._audioPlayerWindow.Timeline.Visibility == Visibility.Visible)
-                                        if (dura.HasTimeSpan)
-                                        {
-                                            double total = dura.TimeSpan.TotalMilliseconds;
-                                            percent = _player.Position.TotalMilliseconds / total;
-
-                                            try
-                                            {
-                                                WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[0].Width = new GridLength(percent, GridUnitType.Star);
-                                                WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[1].Width = new GridLength(1 - percent, GridUnitType.Star);
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Logger.Log($"Error on TrackTheTrack: {ex} | {ex.Message}");
-                                            }
-                                        }
+                                dura = _player.NaturalDuration;
                             });
+
+                            double progress = 0;
+
+                            if (WindowsManager._audioPlayerWindow != null)
+                            {
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (WindowsManager._audioPlayerWindow.WindowState != WindowState.Minimized)
+                                        if (WindowsManager._audioPlayerWindow.Timeline.Visibility == Visibility.Visible)
+                                            if (dura.HasTimeSpan)
+                                            {
+                                                double total = dura.TimeSpan.TotalMilliseconds;
+                                                progress = _player.Position.TotalMilliseconds / total;
+
+                                                try
+                                                {
+                                                    SetProgress(progress);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Logger.Log($"Error on TrackTheTrack: {ex} | {ex.Message}");
+                                                }
+                                            }
+                                });
+                            }
+                        }
+                        catch (ThreadInterruptedException ex)
+                        {
+                            break;
                         }
                     }
                 }
@@ -313,6 +320,12 @@ namespace RIKA_AUDIO
             Logger.Log($"Player unpaused teso. PlayerPosition = {_player.Position} teso.");
         }
 
+        public static void SetProgress(double progres)
+        {
+            WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[0].Width = new GridLength(progres, GridUnitType.Star);
+            WindowsManager._audioPlayerWindow.HereItIs.ColumnDefinitions[1].Width = new GridLength(1 - progres, GridUnitType.Star);
+        }
+
         public static void Next()
         {
             if (_wavPaths.Count() > 0)
@@ -340,7 +353,13 @@ namespace RIKA_AUDIO
             _player.Stop();
             _paused = true;
             WindowsManager._audioPlayerWindow.Timeline.Visibility = Visibility.Hidden;
-            WindowsManager._audioPlayerWindow.Title = $"{_title} - 💿 {_names[_index]} (STOPPED)";
+            SetProgress(0);
+
+            if (_names.Length > 0)
+                WindowsManager._audioPlayerWindow.Title = $"{_title} - 💿 {_names[_index]} (STOPPED)";
+            else
+                WindowsManager._audioPlayerWindow.Title = $"{_title} - {ProgramFiles.GetHello()}";
+
             WindowsManager._audioPlayerWindow.PlayPauseButton.Content = "Start";
         }
 

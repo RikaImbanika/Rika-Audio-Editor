@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public class IMBA
     {
@@ -21,6 +21,8 @@ namespace RIKA_AUDIO
         public ulong _musicMakerTrackNumber;
         public ulong _musicMakerSavesCounter;
         public ulong _trackSavesCounter;
+        public UInt32 _createdInAppVersion;
+        public UInt32 _lastSavedInAppVersion;
 
         public static IMBA Load(string path)
         {
@@ -28,6 +30,10 @@ namespace RIKA_AUDIO
 
             Stream stream = File.OpenRead(path);
             BinaryReader br = new BinaryReader(stream);
+
+            imba._createdInAppVersion = br.ReadUInt32();
+            imba._lastSavedInAppVersion = br.ReadUInt32();
+
             imba._bpm = br.ReadSingle();
             imba._name = br.ReadString();
             imba._lastPath = br.ReadString();
@@ -58,6 +64,8 @@ namespace RIKA_AUDIO
         {
             Stream stream = File.OpenWrite(path);
             BinaryWriter bw = new BinaryWriter(stream);
+            bw.Write(imba._createdInAppVersion);
+            bw.Write(imba._lastSavedInAppVersion);
             bw.Write(imba._bpm);
             bw.Write(imba._name);
             bw.Write(imba._lastPath);
@@ -75,7 +83,9 @@ namespace RIKA_AUDIO
 
         public string ToString()
         {
-            string str = $"Bpm = {_bpm}\r\n";
+            string str = $"Created in app version = {_createdInAppVersion}\r\n";
+            str += $"Last saved in app version = {_lastSavedInAppVersion}\r\n";
+            str += $"Bpm = {_bpm}\r\n";
             str += $"Name = {_name}\r\n";
             str += $"Last path = {_lastPath}\r\n";
             str += $"Creation = {_creation}\r\n";

@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace RIKA_AUDIO;
+namespace RIKA_IMBANIKA_AUDIO;
 
 /// <summary>
 /// Interaction logic for App.xaml

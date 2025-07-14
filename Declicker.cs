@@ -12,7 +12,7 @@ using System.Globalization;
 using System.Windows.Automation;
 using System.Windows.Media.Media3D;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class Declicker
     {
@@ -124,7 +124,7 @@ namespace RIKA_AUDIO
                             _samples[x * _step + y] += Convert.ToSingle(signal[y].Real);
                     }
 
-                    Wav.Save($"{Params._pf}Declick.wav", wav);
+                    Wav.Save($"{Params.PF}Declick.wav", wav);
 
                     if (LR)
                         Logger.Log($"Declicking Right channel ended!");
@@ -137,7 +137,7 @@ namespace RIKA_AUDIO
                     PngBitmapEncoder encoder = new PngBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create(bitmap));
 
-                    using (var stream = new FileStream($"{Params._pf}{name}.png", FileMode.Create))
+                    using (var stream = new FileStream($"{Params.PF}{name}.png", FileMode.Create))
                     {
                         encoder.Save(stream);
                     }

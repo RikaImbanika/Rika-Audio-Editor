@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class MUSICMAKER
     {
@@ -28,8 +28,10 @@ namespace RIKA_AUDIO
             _imba._trackSavesCounter = 0;
             _imba._musicMakerTrackNumber = Params._musicMakerTracksMakedCount + 1;
             _imba._musicMakerSavesCounter = Params._musicMakerGlobalSavesCounter;
+            _imba._createdInAppVersion = 0;
+            _imba._lastSavedInAppVersion = 0;
 
-            WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, unsaved";
+            WindowsManager._musicMakerWindow.Title = $"RIKA IMBANIKA AUDIO - MUSIC MAKER - UNSAVED";
 
             Logger.Log($"Initialized MUSICMAKER.");
         }
@@ -46,13 +48,15 @@ namespace RIKA_AUDIO
                 ? dialog.FileName
                 : string.Empty;
 
+            Logger.Log($"Parsing wav teso...");
             byte[] bytes = File.ReadAllBytes(wavPath);
             Wav wav = AudioParser.Parse(bytes);
+            Logger.Log($"Parsed wav teso.");
         }
 
         public static void New()
         {
-            string text = $"So, u want to create new project.\r\nSo current one will be not saved. Are u sure u really want it teso?";
+            string text = $"So, U want to create new project.\r\nSo current one will be not saved. Are u sure u really want it teso?";
             var wtf = MessageBox.Show(text, "ARE U GAY?", MessageBoxButton.YesNo);
 
             if (wtf == MessageBoxResult.Yes)
@@ -81,7 +85,7 @@ namespace RIKA_AUDIO
                 if (opening == true && File.Exists(dialog.FileName))
                 {
                     _imba = IMBA.Load(dialog.FileName);
-                    WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
+                    WindowsManager._musicMakerWindow.Title = $"RIKA IMBANIKA AUDIO - MUSIC MAKER - {_imba._name}";
                     Logger.Log($"Opened {_imba._name} from {dialog.FileName} teso!");
                     Logger.Log(_imba.ToString());
                 }
@@ -103,6 +107,7 @@ namespace RIKA_AUDIO
                     _imba._trackSavesCounter++;
                     Params._musicMakerGlobalSavesCounter++;
                     _imba._musicMakerSavesCounter = Params._musicMakerGlobalSavesCounter;
+                    _imba._lastSavedInAppVersion = Params._appVersion;
                     IMBA.Save(_imba, _imba._lastPath);
 
                     SaveMMStat();
@@ -142,12 +147,16 @@ namespace RIKA_AUDIO
 
                 _imba._trackSavesCounter++;
                 _imba._musicMakerSavesCounter = Params._musicMakerGlobalSavesCounter;
+                _imba._lastSavedInAppVersion = Params._appVersion;
+
+                if (_imba._createdInAppVersion == 0)
+                    _imba._createdInAppVersion = Params._appVersion;
 
                 Logger.Log($"Trying to save .imba now. Path = {_imba._lastPath}. Name = {_imba._name}.");
 
                 IMBA.Save(_imba, _imba._lastPath);
 
-                WindowsManager._editorWindow.Title = $"Rika Audio Music Maker, {_imba._name}";
+                WindowsManager._musicMakerWindow.Title = $"RIKA IMBANIKA AUDIO - MUSIC MAKER - {_imba._name}";
 
                 SaveMMStat();
 

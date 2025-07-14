@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     public static class MASTERER
     {
@@ -59,7 +59,7 @@ namespace RIKA_AUDIO
                 if (_ourWav.Channels == 2)
                     Normalise(_ourWav.Samples[1]);
 
-                Wav.Save($"{Params._pf}Output\\{outputName}.wav", _ourWav);
+                Wav.Save($"{Params.PF}Output\\{outputName}.wav", _ourWav);
                 Logger.Log($"MASTERING DONE!");
             }
         }
@@ -399,13 +399,13 @@ namespace RIKA_AUDIO
                         WindowsManager._howToMasterWindow.ModelsComboBox.SelectedIndex = -1;
                 });
 
-                File.WriteAllText($"{Params._pf}Params\\SelectedModelName.txt", $"{name}");
+                File.WriteAllText($"{Params.PF}Params\\SelectedModelName.txt", $"{name}");
             }
         }
 
         public static void LoadModelsPaths()
         {
-            _modelsPaths = Directory.GetFiles($"{Params._pf}Models");
+            _modelsPaths = Directory.GetFiles($"{Params.PF}Models");
         }
 
         public static void LoadModelsToComboBox()
@@ -425,7 +425,7 @@ namespace RIKA_AUDIO
 
         public static void SaveModel(float[,] model, string name)
         {
-            string path = $"{Params._pf}Models\\{name}.bin";
+            string path = $"{Params.PF}Models\\{name}.bin";
             using (var stream = File.OpenWrite(path))
             using (var writer = new BinaryWriter(stream))
             {
@@ -1052,7 +1052,7 @@ namespace RIKA_AUDIO
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
 
-            using (var stream = new FileStream($"{Params._pf}{name}.png", FileMode.Create))
+            using (var stream = new FileStream($"{Params.PF}{name}.png", FileMode.Create))
             {
                 encoder.Save(stream);
             }

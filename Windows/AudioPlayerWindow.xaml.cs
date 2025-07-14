@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace RIKA_AUDIO
+namespace RIKA_IMBANIKA_AUDIO
 {
     /// <summary>
     /// Interaction logic for PlayerWindow.xaml
@@ -85,11 +85,12 @@ namespace RIKA_AUDIO
         {
             AudioPlayer.TrackTheTrack();
             WindowsManager._audioPlayerWindow.Timeline.Visibility = Visibility.Hidden;
+            AudioPlayer.SetProgress(0);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-
+            AudioPlayer.Stop();
         }
     }
 }
